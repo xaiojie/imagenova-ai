@@ -114,7 +114,10 @@ export function GeneratePanel() {
       setError(e?.message ?? 'Generation failed');
     } finally {
       clearInterval(ticker);
-      setTimeout(() => setGenerating(false), 400);
+      setTimeout(() => {
+        setGenerating(false);
+        setProgress(0);
+      }, 800);
     }
   };
 
@@ -360,11 +363,15 @@ export function GeneratePanel() {
                         {generating ? '正在生成 · est. 4.2s' : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? 'Demo' : 'Live'}`}
                       </span>
                     </div>
-                    <span style={{ fontFamily: 'JetBrains Mono', fontSize: 12, color: '#f472b6' }}>{Math.round(progress)}%</span>
+                    {generating && (
+                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: 12, color: '#f472b6' }}>{Math.round(progress)}%</span>
+                    )}
                   </div>
-                  <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div className="h-full shimmer-bar rounded-full transition-all" style={{ width: `${progress}%` }} />
-                  </div>
+                  {generating && (
+                    <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                      <div className="h-full shimmer-bar rounded-full transition-all" style={{ width: `${progress}%` }} />
+                    </div>
+                  )}
                   <div className="grid grid-cols-4 gap-2 mt-4">
                     {Array.from({ length: batch }).map((_, i) => {
                       const r = results[i];
