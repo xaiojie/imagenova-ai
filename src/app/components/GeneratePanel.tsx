@@ -1,0 +1,426 @@
+import { useState, useEffect, useRef, ReactNode } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+  Sparkles, Send, ChevronDown, ChevronUp, Cpu, Image as ImageIcon,
+  Shuffle, Eye, Globe2, Wand2,
+  AlertCircle, CheckCircle2, Heart, Download, Copy,
+} from 'lucide-react';
+import { useStore } from '../lib/store';
+import {
+  generateImages, getConfig, getInspiration, imageAction, imageDownloadUrl,
+  AspectRatio, GenerationResult, ImageQuality,
+} from '../lib/imageApi';
+
+const ratios: { id: AspectRatio; label: string; sub: string; w: number; h: number }[] = [
+  { id: '1:1', label: '1:1', sub: 'Square', w: 28, h: 28 },
+  { id: '16:9', label: '16:9', sub: 'Landscape', w: 36, h: 22 },
+  { id: '9:16', label: '9:16', sub: 'Portrait', w: 22, h: 36 },
+  { id: '4:3', label: '4:3', sub: 'Classic', w: 32, h: 24 },
+  { id: '3:4', label: '3:4', sub: 'Poster', w: 24, h: 32 },
+];
+
+const styles = [
+  { id: 'cinematic', label: 'Cinematic', cn: '电影感', color: 'from-amber-400 to-rose-500' },
+  { id: 'realistic', label: 'Realistic', cn: '写实', color: 'from-stone-300 to-stone-500' },
+  { id: 'anime', label: 'Anime', cn: '动漫', color: 'from-pink-400 to-violet-500' },
+  { id: 'product', label: 'Product Shot', cn: '产品', color: 'from-sky-300 to-blue-500' },
+  { id: 'concept', label: 'Concept Art', cn: '概念', color: 'from-violet-400 to-fuchsia-500' },
+  { id: 'cyber', label: 'Cyberpunk', cn: '赛博', color: 'from-cyan-400 to-pink-500' },
+  { id: 'ink', label: 'Chinese Ink', cn: '国风水墨', color: 'from-slate-300 to-slate-500' },
+  { id: '3d', label: '3D Render', cn: '三维', color: 'from-emerald-300 to-teal-500' },
+];
+
+const promptTemplates = [
+  '电影级光影', '超高细节', '真实摄影质感', '柔和体积光',
+  '高级商业海报', 'iPhone 摄影质感', '景深虚化', '黄金时刻',
+];
+
+export function GeneratePanel() {
+  const { prompt, setPrompt, ratio, setRatio, style, setStyle, addWorks, pendingRemix } = useStore();
+  const [tags, setTags] = useState<string[]>(['电影级光影', '超高细节']);
+  const [advanced, setAdvanced] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [results, setResults] = useState<GenerationResult[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [apiConfigured, setApiConfigured] = useState(false);
+  const [batch, setBatch] = useState(4);
+  const [quality, setQuality] = useState<ImageQuality>('ultra');
+  const [creativity, setCreativity] = useState(7.5);
+  const [seed, setSeed] = useState(982134);
+  const [publish, setPublish] = useState(true);
+  const [reference, setReference] = useState<File | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const taRef = useRef<HTMLTextAreaElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    getConfig()
+      .then((cfg) => {
+        setApiConfigured(cfg.hasApiKey);
+        setBatch(Math.min(batch, cfg.membership.maxBatch || 4));
+      })
+      .catch(() => setApiConfigured(false));
+  }, []);
+
+  // When a Remix is triggered elsewhere, scroll here and focus.
+  useEffect(() => {
+    if (pendingRemix === 0) return;
+    panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => taRef.current?.focus(), 600);
+  }, [pendingRemix]);
+
+  const toggleTag = (t: string) => {
+    setTags((cur) => cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t]);
+  };
+
+  const inspire = async () => {
+    try {
+      const next = await getInspiration(prompt, style);
+      setPrompt(next.prompt);
+    } catch (e: any) {
+      setError(e?.message ?? 'Inspiration failed');
+    }
+  };
+
+  const start = async () => {
+    if (generating || !prompt.trim()) return;
+    setError(null);
+    setResults([]);
+    setGenerating(true);
+    setProgress(0);
+
+    const ticker = setInterval(() => {
+      setProgress((p) => (p >= 92 ? p : p + 2 + Math.random() * 3));
+    }, 140);
+
+    try {
+      const items = await generateImages({
+        prompt,
+        ratio,
+        n: batch,
+        quality,
+        style,
+        creativity,
+        seed,
+        publish,
+        tags,
+        reference,
+      });
+      setProgress(100);
+      setResults(items);
+      addWorks(items);
+    } catch (e: any) {
+      setError(e?.message ?? 'Generation failed');
+    } finally {
+      clearInterval(ticker);
+      setTimeout(() => setGenerating(false), 400);
+    }
+  };
+
+  return (
+    <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-8 -mt-6 pb-16 scroll-mt-24">
+      <div className="relative">
+        <div className="absolute -inset-2 rounded-[32px] opacity-60 blur-2xl"
+          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(251,113,133,0.3))' }} />
+
+        <div className="relative glass-strong rounded-[28px] p-8 noise-bg overflow-hidden">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #ec4899)' }}>
+                <Wand2 size={18} className="text-white" />
+              </div>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 600 }}>Nova Studio</div>
+                <div className="text-white/50" style={{ fontSize: 12 }}>开始你的创作 · Describe anything, see it come alive</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2" style={{ fontSize: 11.5 }}>
+                {apiConfigured ? (
+                  <><CheckCircle2 size={12} className="text-emerald-400" /><span className="text-white/65">Live API connected</span></>
+                ) : (
+                  <><AlertCircle size={12} className="text-amber-300" /><span className="text-white/65">Demo mode · set OPENAI_API_KEY on server</span></>
+                )}
+              </div>
+              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2" style={{ fontSize: 12 }}>
+                <Cpu size={12} className="text-violet-300" />
+                <span className="text-white/60">Engine</span>
+                <span style={{ fontFamily: 'JetBrains Mono', color: '#f472b6' }}>GPT-image2 · v2.4</span>
+                <ChevronDown size={12} className="text-white/40" />
+              </div>
+            </div>
+          </div>
+
+          <div className="relative rounded-2xl p-[1.5px] bg-gradient-to-r from-violet-500/40 via-pink-500/40 to-amber-400/30">
+            <div className="rounded-2xl bg-[#0c0a1f]/90 p-5">
+              <textarea
+                ref={taRef}
+                value={prompt}
+                maxLength={1500}
+                onChange={(e) => setPrompt(e.target.value.slice(0, 1500))}
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') start();
+                }}
+                placeholder="描述你想生成的画面，例如：未来城市中的赛博朋克少女，电影级光影，高细节..."
+                className="w-full bg-transparent outline-none resize-none placeholder-white/30"
+                style={{ fontSize: 15, lineHeight: 1.55, minHeight: 88 }}
+              />
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(e) => setReference(e.target.files?.[0] ?? null)}
+                  />
+                  <button
+                    onClick={() => fileRef.current?.click()}
+                    className="text-white/50 hover:text-white/90 transition rounded-lg px-2.5 py-1.5 hover:bg-white/5 flex items-center gap-1.5"
+                    style={{ fontSize: 12 }}
+                  >
+                    <ImageIcon size={13} /> {reference ? reference.name.slice(0, 18) : '参考图'}
+                  </button>
+                  <button onClick={inspire} className="text-white/50 hover:text-white/90 transition rounded-lg px-2.5 py-1.5 hover:bg-white/5 flex items-center gap-1.5" style={{ fontSize: 12 }}>
+                    <Shuffle size={13} /> 灵感
+                  </button>
+                  <span className="text-white/30" style={{ fontSize: 11 }}>{prompt.length} / 1500</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/40" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }}>
+                  ⌘ + ↵
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 mt-6">
+            <div>
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>图片比例</span>
+                <span className="text-white/35" style={{ fontSize: 11 }}>Aspect ratio</span>
+              </div>
+              <div className="grid grid-cols-5 gap-2">
+                {ratios.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setRatio(r.id)}
+                    className={`glass rounded-xl p-3 flex flex-col items-center gap-1.5 transition hover:bg-white/8 ${ratio === r.id ? 'chip-active' : ''}`}
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center">
+                      <div className="border border-white/40 rounded" style={{ width: r.w * 0.7, height: r.h * 0.7 }} />
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 600 }}>{r.label}</span>
+                    <span className="text-white/40" style={{ fontSize: 9 }}>{r.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>风格预设</span>
+                <span className="text-white/35" style={{ fontSize: 11 }}>Style preset</span>
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {styles.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setStyle(s.id)}
+                    className={`glass rounded-xl p-2.5 flex items-center gap-2 transition hover:bg-white/8 ${style === s.id ? 'chip-active' : ''}`}
+                  >
+                    <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${s.color} shrink-0`} />
+                    <div className="text-left min-w-0">
+                      <div className="truncate" style={{ fontSize: 11.5, fontWeight: 500 }}>{s.label}</div>
+                      <div className="text-white/35 truncate" style={{ fontSize: 9 }}>{s.cn}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>基础提示词模板</span>
+              <span className="text-white/35" style={{ fontSize: 11 }}>Click to append</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {promptTemplates.map((t) => {
+                const active = tags.includes(t);
+                return (
+                  <button
+                    key={t}
+                    onClick={() => toggleTag(t)}
+                    className={`glass rounded-full px-3.5 py-1.5 transition hover:bg-white/8 ${active ? 'chip-active' : ''}`}
+                    style={{ fontSize: 12 }}
+                  >
+                    <span className={active ? '' : 'text-white/65'}>+ {t}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <button
+              onClick={() => setAdvanced(!advanced)}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition"
+              style={{ fontSize: 13 }}
+            >
+              <span>高级参数</span>
+              <span className="text-white/35" style={{ fontSize: 11 }}>Advanced</span>
+              {advanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+            <AnimatePresence initial={false}>
+              {advanced && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="grid grid-cols-4 gap-4 mt-4">
+                    <ParamCard label="图片数量" sub="Batch" value={batch}>
+                      <input type="range" min={1} max={4} value={batch} onChange={(e) => setBatch(Number(e.target.value))} className="w-full accent-pink-500" />
+                    </ParamCard>
+                    <ParamCard label="清晰度" sub="Quality" value={quality}>
+                      <select value={quality} onChange={(e) => setQuality(e.target.value as ImageQuality)} className="w-full bg-transparent text-white/80 outline-none" style={{ fontSize: 11 }}>
+                        <option value="standard">Standard</option>
+                        <option value="hd">HD</option>
+                        <option value="ultra">Ultra</option>
+                      </select>
+                    </ParamCard>
+                    <ParamCard label="创意强度" sub="Creativity" value={creativity}>
+                      <input type="range" min={0} max={10} step={0.5} value={creativity} onChange={(e) => setCreativity(Number(e.target.value))} className="w-full accent-pink-500" />
+                    </ParamCard>
+                    <ParamCard label="种子 Seed" sub="Seed" value={seed} mono>
+                      <input value={seed} onChange={(e) => setSeed(Number(e.target.value) || 1)} className="w-full bg-transparent outline-none text-white/70" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }} />
+                    </ParamCard>
+                  </div>
+                  <div className="flex items-center justify-between mt-3 glass rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2.5">
+                      <Globe2 size={15} className="text-emerald-300" />
+                      <div>
+                        <div style={{ fontSize: 12.5 }}>公开到图库</div>
+                        <div className="text-white/40" style={{ fontSize: 10.5 }}>Publish to public gallery</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setPublish((v) => !v)}
+                      className={`w-11 h-6 rounded-full relative ${publish ? 'bg-gradient-to-r from-violet-500 to-pink-500' : 'bg-white/10'}`}
+                    >
+                      <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-lg transition ${publish ? 'right-0.5' : 'left-0.5'}`} />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3">
+            <button
+              onClick={start}
+              disabled={generating || !prompt.trim()}
+              className="btn-glow rounded-2xl px-7 py-4 flex items-center gap-2.5 flex-1 justify-center disabled:opacity-60"
+              style={{ fontSize: 15, fontWeight: 600 }}
+            >
+              <Sparkles size={17} />
+              {generating ? 'GPT-image2 is creating...' : 'Generate Image · 立即生成'}
+              {!generating && <Send size={15} />}
+            </button>
+            <button className="glass rounded-2xl px-5 py-4 hover:bg-white/8 transition flex items-center gap-2" style={{ fontSize: 13 }}>
+              <Eye size={14} /> Preview
+            </button>
+          </div>
+
+          {error && (
+            <div className="mt-4 glass rounded-xl px-4 py-3 flex items-center gap-2 border border-rose-400/30" style={{ fontSize: 12.5 }}>
+              <AlertCircle size={14} className="text-rose-400" /> {error}
+            </div>
+          )}
+
+          <AnimatePresence>
+            {(generating || results.length > 0) && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-5 glass rounded-2xl p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full ${generating ? 'bg-pink-400 animate-pulse' : 'bg-emerald-400'}`} />
+                      <span style={{ fontSize: 13, fontWeight: 500 }}>
+                        {generating ? 'GPT-image2 is creating...' : `Generated ${results.length} images`}
+                      </span>
+                      <span className="text-white/40" style={{ fontSize: 11 }}>
+                        {generating ? '正在生成 · est. 4.2s' : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? 'Demo' : 'Live'}`}
+                      </span>
+                    </div>
+                    <span style={{ fontFamily: 'JetBrains Mono', fontSize: 12, color: '#f472b6' }}>{Math.round(progress)}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-full shimmer-bar rounded-full transition-all" style={{ width: `${progress}%` }} />
+                  </div>
+                  <div className="grid grid-cols-4 gap-2 mt-4">
+                    {Array.from({ length: batch }).map((_, i) => {
+                      const r = results[i];
+                      return (
+                        <div key={i} className="aspect-square rounded-xl overflow-hidden relative bg-white/5 group">
+                          {r ? (
+                            <>
+                              <img src={r.url} className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition">
+                                <button onClick={() => imageAction(r.id, 'like')} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Like"><Heart size={10} className="text-pink-400" /></button>
+                                <button onClick={() => { imageAction(r.id, 'copy'); navigator.clipboard?.writeText(r.prompt); }} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Copy prompt"><Copy size={10} /></button>
+                                <a href={imageDownloadUrl(r.id)} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Download"><Download size={10} /></a>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="absolute inset-0 animate-pulse-soft" style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.18), rgba(236,72,153,0.18))' }} />
+                              <div className="absolute inset-x-0 top-1/2 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)', animation: 'shimmer 1.6s linear infinite' }} />
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ParamCard({
+  label, sub, value, mono, children,
+}: {
+  label: string;
+  sub: string;
+  value: string | number;
+  mono?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="glass rounded-xl p-3.5">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-white/70" style={{ fontSize: 12 }}>{label}</span>
+        <span className="text-white/35" style={{ fontSize: 10 }}>{sub}</span>
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <span style={{ fontSize: 18, fontWeight: 600, fontFamily: mono ? 'JetBrains Mono' : 'Space Grotesk' }}>
+          {value}
+        </span>
+        <div className="min-w-0 flex-1">{children}</div>
+      </div>
+    </div>
+  );
+}
