@@ -832,25 +832,27 @@ async function callOpenAiImage(req, referenceFile) {
     });
   };
 
-  let res;
   let lastError;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      res = await fetchImage();
-      break;
+      const res = await fetchImage();
+      if (res.ok) {
+        const data = await res.json();
+        return data.data || [];
+      }
+
+      const text = await res.text();
+      lastError = new Error(`OpenAI image API ${res.status}: ${text.slice(0, 280)}`);
+      if (![502, 503, 504].includes(res.status) || attempt === 2) {
+        throw lastError;
+      }
     } catch (error) {
       lastError = error;
-      if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 600));
+      if (attempt === 2) break;
     }
+    await new Promise((resolve) => setTimeout(resolve, 800 * (attempt + 1)));
   }
-  if (!res) throw lastError || new Error('Image provider request failed.');
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`OpenAI image API ${res.status}: ${text.slice(0, 280)}`);
-  }
-  const data = await res.json();
-  return data.data || [];
+  throw lastError || new Error('Image provider request failed.');
 }
 
 async function callOpenAiImages(req, referenceFile) {
