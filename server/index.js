@@ -23,6 +23,7 @@ loadEnv(envPath);
 const PORT = Number(process.env.PORT || 8787);
 const SESSION_COOKIE = 'imagenova_session';
 const SESSION_TTL = 1000 * 60 * 60 * 24 * 7;
+const IMAGE_PROVIDER_TIMEOUT_MS = Number(process.env.IMAGE_PROVIDER_TIMEOUT_MS || 110000);
 const DATA_DRIVER = process.env.DATA_DRIVER === 'mysql' ? 'mysql' : 'json';
 let dbWriteQueue = Promise.resolve();
 let mysqlPool;
@@ -791,29 +792,49 @@ function toOpenAiQuality(quality) {
   return 'auto';
 }
 
+function compactProviderError(status, text) {
+  const plain = String(text || '')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const message = plain || 'Image provider did not return a readable error.';
+  return `Image provider ${status}: ${message.slice(0, 180)}`;
+}
+
 async function callOpenAiImage(req, referenceFile) {
   const { apiKey, imageApiBase, imageModel } = getRuntimeConfig();
   const endpoint = referenceFile ? `${imageApiBase}/images/edits` : `${imageApiBase}/images/generations`;
   const finalPrompt = buildFinalPrompt(req);
 
   const fetchImage = async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), IMAGE_PROVIDER_TIMEOUT_MS);
+    const options = {
+      method: 'POST',
+      signal: controller.signal,
+    };
     if (!referenceFile) {
-      return fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: imageModel,
-          prompt: finalPrompt,
-          size: ratioToSize[req.ratio],
-          n: req.n,
-          quality: toOpenAiQuality(req.quality),
-          background: 'auto',
-          output_format: 'png',
-        }),
-      });
+      try {
+        return await fetch(endpoint, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: imageModel,
+            prompt: finalPrompt,
+            size: ratioToSize[req.ratio],
+            n: req.n,
+            quality: toOpenAiQuality(req.quality),
+            background: 'auto',
+            output_format: 'png',
+          }),
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
     }
 
     const form = new FormData();
@@ -825,11 +846,17 @@ async function callOpenAiImage(req, referenceFile) {
     form.append('background', 'auto');
     form.append('output_format', 'png');
     form.append('image', new Blob([referenceFile.buffer], { type: referenceFile.mimetype }), referenceFile.originalname || 'reference.png');
-    return fetch(endpoint, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${apiKey}` },
-      body: form,
-    });
+    try {
+      return await fetch(endpoint, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: form,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
   };
 
   let lastError;
@@ -842,12 +869,14 @@ async function callOpenAiImage(req, referenceFile) {
       }
 
       const text = await res.text();
-      lastError = new Error(`OpenAI image API ${res.status}: ${text.slice(0, 280)}`);
+      lastError = new Error(compactProviderError(res.status, text));
       if (![502, 503, 504].includes(res.status) || attempt === 2) {
         throw lastError;
       }
     } catch (error) {
-      lastError = error;
+      lastError = error?.name === 'AbortError'
+        ? new Error(`Image provider timed out after ${Math.round(IMAGE_PROVIDER_TIMEOUT_MS / 1000)}s.`)
+        : error;
       if (attempt === 2) break;
     }
     await new Promise((resolve) => setTimeout(resolve, 800 * (attempt + 1)));
