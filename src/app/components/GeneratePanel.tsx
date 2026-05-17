@@ -7,8 +7,8 @@ import {
 } from 'lucide-react';
 import { useStore } from '../lib/store';
 import {
-  generateImages, getConfig, getInspiration, imageAction, imageDownloadUrl,
-  AspectRatio, GenerationResult, ImageQuality,
+  getConfig, getInspiration, imageAction, imageDownloadUrl,
+  AspectRatio, ImageQuality,
 } from '../lib/imageApi';
 
 const ratios: { id: AspectRatio; label: string; sub: string; w: number; h: number }[] = [
@@ -36,15 +36,14 @@ const promptTemplates = [
 ];
 
 export function GeneratePanel() {
-  const { prompt, setPrompt, ratio, setRatio, style, setStyle, addWorks, pendingRemix, user, setUser } = useStore();
+  const {
+    prompt, setPrompt, ratio, setRatio, style, setStyle,
+    pendingRemix, user, setUser, generation, startGeneration, setGenerationError,
+  } = useStore();
   const [tags, setTags] = useState<string[]>(['电影级光影', '超高细节']);
   const [advanced, setAdvanced] = useState(true);
-  const [generating, setGenerating] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [results, setResults] = useState<GenerationResult[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [apiConfigured, setApiConfigured] = useState(false);
-  const [batch, setBatch] = useState(4);
+  const [batch, setBatch] = useState(2);
   const [quality, setQuality] = useState<ImageQuality>('ultra');
   const [creativity, setCreativity] = useState(7.5);
   const [seed, setSeed] = useState(982134);
@@ -59,7 +58,7 @@ export function GeneratePanel() {
       .then((cfg) => {
         setApiConfigured(cfg.hasApiKey);
         setUser(cfg.user);
-        setBatch(Math.min(batch, cfg.membership.maxBatch || 4));
+        setBatch((current) => Math.min(current, cfg.membership.maxBatch || 4));
       })
       .catch(() => setApiConfigured(false));
   }, []);
@@ -80,51 +79,35 @@ export function GeneratePanel() {
       const next = await getInspiration(prompt, style);
       setPrompt(next.prompt);
     } catch (e: any) {
-      setError(e?.message ?? 'Inspiration failed');
+      setGenerationError(e?.message ?? 'Inspiration failed');
     }
   };
 
   const start = async () => {
-    if (generating || !prompt.trim()) return;
+    if (generation.generating || !prompt.trim()) return;
     if (!user) {
-      setError('请先登录后再生成图片。');
+      setGenerationError('请先登录后再生成图片。');
       return;
     }
-    setError(null);
-    setResults([]);
-    setGenerating(true);
-    setProgress(0);
-
-    const ticker = setInterval(() => {
-      setProgress((p) => (p >= 92 ? p : p + 2 + Math.random() * 3));
-    }, 140);
-
-    try {
-      const items = await generateImages({
-        prompt,
-        ratio,
-        n: batch,
-        quality,
-        style,
-        creativity,
-        seed,
-        publish,
-        tags,
-        reference,
-      });
-      setProgress(100);
-      setResults(items);
-      addWorks(items);
-    } catch (e: any) {
-      setError(e?.message ?? 'Generation failed');
-    } finally {
-      clearInterval(ticker);
-      setTimeout(() => {
-        setGenerating(false);
-        setProgress(0);
-      }, 800);
-    }
+    await startGeneration({
+      prompt,
+      ratio,
+      n: batch,
+      quality,
+      style,
+      creativity,
+      seed,
+      publish,
+      tags,
+      reference,
+    });
   };
+
+  const generating = generation.generating;
+  const progress = generation.progress;
+  const results = generation.results;
+  const error = generation.error;
+  const previewSlots = generating ? generation.batch : Math.max(batch, results.length);
 
   return (
     <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-4 md:px-8 mt-0 md:-mt-6 pb-12 md:pb-16 scroll-mt-24">
@@ -378,7 +361,7 @@ export function GeneratePanel() {
                     </div>
                   )}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
-                    {Array.from({ length: batch }).map((_, i) => {
+                    {Array.from({ length: previewSlots }).map((_, i) => {
                       const r = results[i];
                       return (
                         <div key={i} className="aspect-square rounded-xl overflow-hidden relative bg-white/5 group">

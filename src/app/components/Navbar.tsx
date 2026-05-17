@@ -18,12 +18,22 @@ export function Navbar() {
   const [unread, setUnread] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const keepAnchorActiveUntil = useRef(0);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getModels().then((data) => setModel(data.selected)).catch(() => {});
     getNotifications().then((data) => setUnread(data.items.filter((item) => !item.read).length)).catch(() => {});
     getMe().then((data) => setUser(data.user)).catch(() => setUser(null));
+  }, []);
+
+  useEffect(() => {
+    const onPointerDown = (event: PointerEvent) => {
+      if (!userMenuRef.current?.contains(event.target as Node)) setUserMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
   }, []);
 
   useEffect(() => {
@@ -146,14 +156,23 @@ export function Navbar() {
           </button>
 
           {user ? (
-            <div className="relative group">
-              <div className="w-9 h-9 md:w-10 md:h-10 rounded-full p-[2px] bg-gradient-to-br from-violet-500 via-pink-500 to-amber-400">
-                <div className="w-full h-full rounded-full bg-[#1a1830] flex items-center justify-center" style={{ fontWeight: 600, fontSize: 13 }}>
-                  {user.avatar}
+            <div ref={userMenuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setUserMenuOpen((open) => !open)}
+                className="relative block"
+                aria-haspopup="menu"
+                aria-expanded={userMenuOpen}
+              >
+                <div className="w-9 h-9 md:w-10 md:h-10 rounded-full p-[2px] bg-gradient-to-br from-violet-500 via-pink-500 to-amber-400">
+                  <div className="w-full h-full rounded-full bg-[#1a1830] flex items-center justify-center" style={{ fontWeight: 600, fontSize: 13 }}>
+                    {user.avatar}
+                  </div>
                 </div>
-              </div>
-              <Sparkles size={10} className="absolute -bottom-0.5 -right-0.5 text-amber-300" />
-              <div className="absolute right-0 top-12 hidden w-56 rounded-2xl glass-strong border border-white/10 p-3 group-hover:block">
+                <Sparkles size={10} className="absolute -bottom-0.5 -right-0.5 text-amber-300" />
+              </button>
+              {userMenuOpen && (
+              <div className="absolute right-0 top-12 w-56 rounded-2xl glass-strong border border-white/10 p-3">
                 <div className="mb-3">
                   <div className="text-white/90" style={{ fontSize: 13, fontWeight: 600 }}>{user.name}</div>
                   <div className="text-white/40 truncate" style={{ fontSize: 11 }}>{user.email}</div>
@@ -169,13 +188,14 @@ export function Navbar() {
                   </div>
                 </div>
                 <button
-                  onClick={async () => { await logout(); setUser(null); }}
+                  onClick={async () => { await logout(); setUser(null); setUserMenuOpen(false); }}
                   className="w-full rounded-xl px-3 py-2 text-left text-white/65 hover:bg-white/8 flex items-center gap-2"
                   style={{ fontSize: 12 }}
                 >
                   <LogOut size={13} /> 退出登录
                 </button>
               </div>
+              )}
             </div>
           ) : (
             <button

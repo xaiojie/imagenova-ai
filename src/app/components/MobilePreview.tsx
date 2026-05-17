@@ -1,10 +1,10 @@
 import { Sparkles, Search, Heart, Home, User, Compass, Send, Wand2, Cpu, Bell } from 'lucide-react';
 
 const mobileGallery = [
-  { url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', h: 180 },
-  { url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', h: 120 },
-  { url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', h: 200 },
-  { url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', h: 150 },
+  { url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', h: 180 },
+  { url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', h: 120 },
+  { url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', h: 200 },
+  { url: '/assets/showcase/1778921891612-x61gjv-hix-aadakaqoycj-dd3480e1.jpg', h: 150 },
 ];
 
 function Phone({ children, label }: { children: React.ReactNode; label: string }) {
@@ -127,7 +127,7 @@ export function MobilePreview() {
               <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>SHARE</div>
             </div>
             <div className="rounded-2xl overflow-hidden mb-3 relative">
-              <img src="https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg" className="w-full h-[280px] object-cover" />
+              <img src="/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg" className="w-full h-[280px] object-cover" />
               <div className="absolute top-2 left-2 flex gap-1.5">
                 <span className="glass rounded-md px-1.5 py-0.5" style={{ fontSize: 9, fontFamily: 'JetBrains Mono' }}>3:4</span>
                 <span className="glass rounded-md px-1.5 py-0.5 flex items-center gap-1" style={{ fontSize: 9 }}><Cpu size={9} />GPT-image2</span>

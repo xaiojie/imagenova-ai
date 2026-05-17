@@ -14,8 +14,6 @@ export type PromptLibraryItem = {
   tags: string[];
 };
 
-const zeroLuRaw = 'https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main';
-
 export const promptCategories = [
   { id: 'all', label: '全部', hint: 'All' },
   { id: 'photography', label: '摄影写实', hint: 'Photo' },
@@ -34,7 +32,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "表情拼贴",
     category: "photography",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921868703_07e4em_HIZO0L_XwAAmPKY.jpg",
+    image: "/assets/showcase/1778921868703-07e4em-hizo0l-xwaampky-cd29e8dc.jpg",
     ratio: "1:1",
     difficulty: "专业",
     tags: [
@@ -51,7 +49,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "奇幻肖像",
     category: "anime",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921960879_z9jnsd_HIZFaItbAAAWVRR.jpg",
+    image: "/assets/showcase/1778921960879-z9jnsd-hizfaitbaaawvrr-60a69483.jpg",
     ratio: "3:4",
     difficulty: "进阶",
     tags: [
@@ -68,7 +66,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "胶片街拍",
     category: "photography",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778922023755_3hx53o_HIbP6NcWwAAAwNr.jpg",
+    image: "/assets/showcase/1778922023755-3hx53o-hibp6ncwwaaawnr-dc53e5e4.jpg",
     ratio: "3:4",
     difficulty: "入门",
     tags: [
@@ -85,7 +83,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "微距奇幻",
     category: "photography",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921944470_mcb9yc_HIX8F4bawAAgeLU.jpg",
+    image: "/assets/showcase/1778921944470-mcb9yc-hix8f4bawaagelu-3b8b7121.jpg",
     ratio: "3:4",
     difficulty: "进阶",
     tags: [
@@ -102,7 +100,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "结果界面",
     category: "ui",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921912215_g5vfuh_HIWRFxdasAEqpEN.jpg",
+    image: "/assets/showcase/1778921912215-g5vfuh-hiwrfxdasaeqpen-ad11241f.jpg",
     ratio: "3:2",
     difficulty: "专业",
     tags: [
@@ -119,7 +117,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "餐厅信息图",
     category: "poster",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921960019_91cuzt_HIVWtObbMAAbb3u.jpg",
+    image: "/assets/showcase/1778921960019-91cuzt-hivwtobbmaabb3u-1cd95d49.jpg",
     ratio: "3:4",
     difficulty: "进阶",
     tags: [
@@ -136,7 +134,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "旅行写生",
     category: "poster",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921867055_8zlvqo_HIVMjDzbsAAnRBX.jpg",
+    image: "/assets/showcase/1778921867055-8zlvqo-hivmjdzbsaanrbx-e877d76c.jpg",
     ratio: "3:4",
     difficulty: "入门",
     tags: [
@@ -153,7 +151,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "文档视觉",
     category: "infographic",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778921965358_hvjbd8_HIVDqvHaoAAvrTU.jpg",
+    image: "/assets/showcase/1778921965358-hvjbd8-hivdqvhaoaavrtu-f8a4917a.jpg",
     ratio: "3:4",
     difficulty: "专业",
     tags: [
@@ -170,7 +168,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "漫画 UI",
     category: "ui",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778922017005_yys1ej_HIZQ41eaQAA0SQQ.jpg",
+    image: "/assets/showcase/1778922017005-yys1ej-hizq41eaqaa0sqq-298fd3ce.jpg",
     ratio: "9:16",
     difficulty: "进阶",
     tags: [
@@ -187,7 +185,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "角色三视图",
     category: "anime",
     source: "YouMind",
-    image: "https://cms-assets.youmind.com/media/1778922011412_9is10v_HIYSMQXWUAAPpZW.jpg",
+    image: "/assets/showcase/1778922011412-9is10v-hiysmqxwuaappzw-53aa5f8d.jpg",
     ratio: "16:9",
     difficulty: "专业",
     tags: [
@@ -204,7 +202,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "桌面摄影",
     category: "photography",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/black-pen-handwritten-notes.jpg",
+    image: "/assets/showcase/black-pen-handwritten-notes-a7e06d19.jpg",
     ratio: "4:3",
     difficulty: "入门",
     tags: [
@@ -221,7 +219,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "微距挑战",
     category: "photography",
     source: "ZeroLu",
-    image: "https://pbs.twimg.com/media/HGc-2eKWYAATrs9?format=jpg&name=large",
+    image: "/assets/showcase/hgc-2ekwyaatrs9-cd57c091.jpg",
     ratio: "1:1",
     difficulty: "进阶",
     tags: [
@@ -238,7 +236,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "空间全景",
     category: "photography",
     source: "ZeroLu",
-    image: "https://pbs.twimg.com/amplify_video_thumb/2046725535439482880/img/v9e7898p1ynJv-xz.jpg",
+    image: "/assets/showcase/v9e7898p1ynjv-xz-7657706d.jpg",
     ratio: "16:9",
     difficulty: "进阶",
     tags: [
@@ -255,7 +253,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "动作游戏",
     category: "game",
     source: "ZeroLu",
-    image: "https://github.com/user-attachments/assets/49e41036-4ad4-4908-a3a8-88a2f28f1148",
+    image: "/assets/showcase/49e41036-4ad4-4908-a3a8-88a2f28f1148-d9b64039.png",
     ratio: "16:9",
     difficulty: "入门",
     tags: [
@@ -272,7 +270,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "开放世界",
     category: "game",
     source: "ZeroLu",
-    image: "https://pbs.twimg.com/media/HFPAX19XMAAJ8V_?format=jpg&name=large",
+    image: "/assets/showcase/hfpax19xmaaj8v-ba237baa.jpg",
     ratio: "16:9",
     difficulty: "入门",
     tags: [
@@ -289,7 +287,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "竖屏直播",
     category: "ui",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/liu-yifei-douyin-live-chat.jpg",
+    image: "/assets/showcase/liu-yifei-douyin-live-chat-b670c6a1.jpg",
     ratio: "9:16",
     difficulty: "进阶",
     tags: [
@@ -306,7 +304,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "移动端 UI",
     category: "ui",
     source: "ZeroLu",
-    image: "https://github.com/user-attachments/assets/6b709a24-b00a-4942-8c77-8f10ac03e8f8",
+    image: "/assets/showcase/6b709a24-b00a-4942-8c77-8f10ac03e8f8-a03294b4.png",
     ratio: "9:16",
     difficulty: "专业",
     tags: [
@@ -323,7 +321,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "商品详情",
     category: "product",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/terminator-taobao-page.jpeg",
+    image: "/assets/showcase/terminator-taobao-page-a2311d7c.jpg",
     ratio: "3:4",
     difficulty: "专业",
     tags: [
@@ -340,7 +338,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "视觉游戏",
     category: "poster",
     source: "ZeroLu",
-    image: "https://pbs.twimg.com/media/HGcgIHWWgAEph1p?format=jpg&name=large",
+    image: "/assets/showcase/hgcgihwwgaeph1p-7dd9c801.jpg",
     ratio: "3:4",
     difficulty: "进阶",
     tags: [
@@ -357,7 +355,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "流程图",
     category: "infographic",
     source: "ZeroLu",
-    image: "https://github.com/user-attachments/assets/ac0ed885-5b27-46d5-a163-f9e3c15dca3b",
+    image: "/assets/showcase/ac0ed885-5b27-46d5-a163-f9e3c15dca3b-6fe8b78b.png",
     ratio: "3:4",
     difficulty: "专业",
     tags: [
@@ -374,7 +372,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "关系海报",
     category: "infographic",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/key-character-relationship-map.jpeg",
+    image: "/assets/showcase/key-character-relationship-map-a35749d0.jpg",
     ratio: "16:9",
     difficulty: "专业",
     tags: [
@@ -391,7 +389,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "文博图录",
     category: "infographic",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/museum-level-chinese-disassembly-infographic.jpeg",
+    image: "/assets/showcase/museum-level-chinese-disassembly-infographic-e400f344.jpg",
     ratio: "3:4",
     difficulty: "专业",
     tags: [
@@ -408,7 +406,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "知识卡片",
     category: "infographic",
     source: "ZeroLu",
-    image: "https://pbs.twimg.com/media/HGcAZlsa8AEpG1O?format=jpg&name=large",
+    image: "/assets/showcase/hgcazlsa8aepg1o-9b49a134.jpg",
     ratio: "3:4",
     difficulty: "专业",
     tags: [
@@ -425,7 +423,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "表情资产",
     category: "anime",
     source: "ZeroLu",
-    image: "https://github.com/user-attachments/assets/27258fa9-086e-4dfa-b61e-d9ada90425b2",
+    image: "/assets/showcase/27258fa9-086e-4dfa-b61e-d9ada90425b2-3f6c5da9.png",
     ratio: "1:1",
     difficulty: "专业",
     tags: [
@@ -442,7 +440,7 @@ export const promptLibrary: PromptLibraryItem[] = [
     cn: "角色资料",
     category: "anime",
     source: "ZeroLu",
-    image: "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/assets/opennana/official-character-reference-sheet.jpeg",
+    image: "/assets/showcase/official-character-reference-sheet-83037e45.jpg",
     ratio: "16:9",
     difficulty: "专业",
     tags: [

@@ -4,12 +4,12 @@ import { getPromptPresets, PromptPreset, usePromptPreset } from '../lib/imageApi
 import { useStore } from '../lib/store';
 
 const presets = [
-  { title: 'VR Exploded Poster', cn: '产品爆炸图', desc: '高科技 VR 头显组件拆解海报', url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', tag: '18k uses' },
-  { title: 'Foodie City Map', cn: '美食地图', desc: '手绘水彩城市美食旅游地图', url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', tag: '17k uses' },
-  { title: 'Live Commerce UI', cn: '直播样机', desc: '电商直播间叠层 UI 与购买卡片', url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', tag: '16k uses' },
-  { title: 'Anime Martial Duel', cn: '动漫动作', desc: '传统道场中的动态武术对决', url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', tag: '15k uses' },
-  { title: '3D Evolution Steps', cn: '教育信息图', desc: '石阶式演化时间线信息图', url: 'https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg', tag: '14k uses' },
-  { title: 'Cyber Neon Portrait', cn: '赛博头像', desc: '霓虹眼镜与 HUD 投影肖像', url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', tag: '13k uses' },
+  { title: 'VR Exploded Poster', cn: '产品爆炸图', desc: '高科技 VR 头显组件拆解海报', url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', tag: '18k uses' },
+  { title: 'Foodie City Map', cn: '美食地图', desc: '手绘水彩城市美食旅游地图', url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', tag: '17k uses' },
+  { title: 'Live Commerce UI', cn: '直播样机', desc: '电商直播间叠层 UI 与购买卡片', url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', tag: '16k uses' },
+  { title: 'Anime Martial Duel', cn: '动漫动作', desc: '传统道场中的动态武术对决', url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', tag: '15k uses' },
+  { title: '3D Evolution Steps', cn: '教育信息图', desc: '石阶式演化时间线信息图', url: '/assets/showcase/1776661968404-8a5flm-hgqc-koamaa2vt0-0d1ee4bb.jpg', tag: '14k uses' },
+  { title: 'Cyber Neon Portrait', cn: '赛博头像', desc: '霓虹眼镜与 HUD 投影肖像', url: '/assets/showcase/1778921891612-x61gjv-hix-aadakaqoycj-dd3480e1.jpg', tag: '13k uses' },
 ];
 
 export function PromptPresets() {

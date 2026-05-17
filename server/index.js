@@ -228,18 +228,18 @@ const promptPresets = [
 ];
 
 const showcaseItems = [
-  { url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', prompt: promptPresets[0].prompt, ratio: '16:9', style: '3d', author: { user: 'YouMind Lab', avatar: 'Y' } },
-  { url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', prompt: promptPresets[1].prompt, ratio: '16:9', style: 'ink', author: { user: 'Map Studio', avatar: 'M' } },
-  { url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', prompt: promptPresets[2].prompt, ratio: '9:16', style: 'product', author: { user: 'Commerce UI', avatar: 'C' } },
-  { url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', prompt: promptPresets[3].prompt, ratio: '16:9', style: 'anime', author: { user: 'Anime Dojo', avatar: 'A' } },
-  { url: 'https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg', prompt: promptPresets[4].prompt, ratio: '16:9', style: '3d', author: { user: 'Edu Visual', avatar: 'E' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', prompt: promptPresets[5].prompt, ratio: '3:4', style: 'cyber', author: { user: 'Neon Face', avatar: 'N' } },
-  { url: 'https://cms-assets.youmind.com/media/1778922047354_0u5p7u_HIYbWLOWwAASxOk.jpg', prompt: 'Q 版动漫吉祥物特写插画，粉色双马尾女孩手持醒目的三角形品牌标志，白色干净背景，超大闪亮眼睛，柔和腮红，适合品牌头像与推广海报。', ratio: '1:1', style: 'anime', author: { user: 'Mascot Lab', avatar: 'Q' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921879298_86knan_HIX7rmJakAcVvQZ.jpg', prompt: 'Q 版旅行 Vlog 海报设计，迷你旅行者在世界城市中探险，巨大 3D 城市字体内填充地标摄影，光泽杂志质感，可爱而明亮。', ratio: '3:4', style: 'concept', author: { user: 'Vlog Poster', avatar: 'V' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921961875_i1n9vo_HIZVItTbAAAe_3G.jpg', prompt: '深色主题 PowerPoint 风格图像编辑窗口截图，展示背景移除后的梦幻可爱兔图标，日文界面、圆角模态框、42% 缩放指示器，适合 UI 原型展示。', ratio: '4:3', style: 'product', author: { user: 'Slide UI', avatar: 'S' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921884401_0kutj1_HIXcmI3aUAARyej.jpg', prompt: '柔和手工层叠纸雕插画，平滑圆润形状、极简面部细节、豆豆眼与红晕，温暖舒适的手作纸艺立体模型美学。', ratio: '3:4', style: 'concept', author: { user: 'Paper Craft', avatar: 'P' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921974908_m837gj_HIV1z88bgAEkx6Z.jpg', prompt: '2×2 照片级逼真眼镜店室内对比拼贴图，每个面板标注不同图像模型名称，现代光学商店、展示架、镜框细节与真实商业摄影质感。', ratio: '16:9', style: 'realistic', author: { user: 'Optic Grid', avatar: 'O' } },
-  { url: 'https://cms-assets.youmind.com/media/1778921976047_imleff_HIV12QFbUAAZ4xY.jpg', prompt: '四格对比拼图，展示不同图像模型如何重现同一份日本 DX Report 信息图，白色背景、2×2 网格、密集日文图表与清晰信息层级。', ratio: '16:9', style: 'concept', author: { user: 'DX Report', avatar: 'D' } },
+  { url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', prompt: promptPresets[0].prompt, ratio: '16:9', style: '3d', author: { user: 'YouMind Lab', avatar: 'Y' } },
+  { url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', prompt: promptPresets[1].prompt, ratio: '16:9', style: 'ink', author: { user: 'Map Studio', avatar: 'M' } },
+  { url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', prompt: promptPresets[2].prompt, ratio: '9:16', style: 'product', author: { user: 'Commerce UI', avatar: 'C' } },
+  { url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', prompt: promptPresets[3].prompt, ratio: '16:9', style: 'anime', author: { user: 'Anime Dojo', avatar: 'A' } },
+  { url: '/assets/showcase/1776661968404-8a5flm-hgqc-koamaa2vt0-0d1ee4bb.jpg', prompt: promptPresets[4].prompt, ratio: '16:9', style: '3d', author: { user: 'Edu Visual', avatar: 'E' } },
+  { url: '/assets/showcase/1778921891612-x61gjv-hix-aadakaqoycj-dd3480e1.jpg', prompt: promptPresets[5].prompt, ratio: '3:4', style: 'cyber', author: { user: 'Neon Face', avatar: 'N' } },
+  { url: '/assets/showcase/1778922047354-0u5p7u-hiybwlowwaasxok-0dc6824c.jpg', prompt: 'Q 版动漫吉祥物特写插画，粉色双马尾女孩手持醒目的三角形品牌标志，白色干净背景，超大闪亮眼睛，柔和腮红，适合品牌头像与推广海报。', ratio: '1:1', style: 'anime', author: { user: 'Mascot Lab', avatar: 'Q' } },
+  { url: '/assets/showcase/1778921879298-86knan-hix7rmjakacvvqz-db73c36e.jpg', prompt: 'Q 版旅行 Vlog 海报设计，迷你旅行者在世界城市中探险，巨大 3D 城市字体内填充地标摄影，光泽杂志质感，可爱而明亮。', ratio: '3:4', style: 'concept', author: { user: 'Vlog Poster', avatar: 'V' } },
+  { url: '/assets/showcase/1778921961875-i1n9vo-hizvittbaaae-3g-393fd79d.jpg', prompt: '深色主题 PowerPoint 风格图像编辑窗口截图，展示背景移除后的梦幻可爱兔图标，日文界面、圆角模态框、42% 缩放指示器，适合 UI 原型展示。', ratio: '4:3', style: 'product', author: { user: 'Slide UI', avatar: 'S' } },
+  { url: '/assets/showcase/1778921884401-0kutj1-hixcmi3auaaryej-8a859714.jpg', prompt: '柔和手工层叠纸雕插画，平滑圆润形状、极简面部细节、豆豆眼与红晕，温暖舒适的手作纸艺立体模型美学。', ratio: '3:4', style: 'concept', author: { user: 'Paper Craft', avatar: 'P' } },
+  { url: '/assets/showcase/1778921974908-m837gj-hiv1z88bgaekx6z-188cdcb2.jpg', prompt: '2×2 照片级逼真眼镜店室内对比拼贴图，每个面板标注不同图像模型名称，现代光学商店、展示架、镜框细节与真实商业摄影质感。', ratio: '16:9', style: 'realistic', author: { user: 'Optic Grid', avatar: 'O' } },
+  { url: '/assets/showcase/1778921976047-imleff-hiv12qfbuaaz4xy-c1c76ae9.jpg', prompt: '四格对比拼图，展示不同图像模型如何重现同一份日本 DX Report 信息图，白色背景、2×2 网格、密集日文图表与清晰信息层级。', ratio: '16:9', style: 'concept', author: { user: 'DX Report', avatar: 'D' } },
 ];
 
 const mockPool = showcaseItems.map((item) => item.url);
@@ -839,6 +839,28 @@ async function callOpenAiImage(req, referenceFile) {
   return data.data || [];
 }
 
+async function callOpenAiImages(req, referenceFile) {
+  const requested = req.n;
+  const items = [];
+  let attempts = 0;
+
+  while (items.length < requested && attempts < requested) {
+    const remaining = requested - items.length;
+    let next;
+    try {
+      next = await callOpenAiImage({ ...req, n: remaining }, referenceFile);
+    } catch (error) {
+      if (remaining <= 1) throw error;
+      next = await callOpenAiImage({ ...req, n: 1 }, referenceFile);
+    }
+    if (next.length === 0) break;
+    items.push(...next.slice(0, remaining));
+    attempts += 1;
+  }
+
+  return items;
+}
+
 async function persistApiImage(payload, imageId, index) {
   if (payload.b64_json) {
     const filename = `${imageId}_${index}.png`;
@@ -1258,7 +1280,7 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     let records = [];
     if (apiKey) {
       try {
-        const apiItems = await callOpenAiImage(body, req.file);
+        const apiItems = await callOpenAiImages(body, req.file);
         for (let i = 0; i < apiItems.length; i += 1) {
           const imageId = id('img');
           const url = await persistApiImage(apiItems[i], imageId, i);

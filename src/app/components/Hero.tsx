@@ -2,10 +2,10 @@ import { ArrowRight, Compass, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const heroImages = [
-  { url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', tag: 'Exploded View', x: 0, y: 30, rot: -6, w: 230, h: 270, delay: 0 },
-  { url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', tag: 'Live UI', x: 240, y: -10, rot: 4, w: 210, h: 290, delay: 0.8 },
-  { url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', tag: 'Map Infographic', x: 35, y: 320, rot: -3, w: 270, h: 170, delay: 1.4 },
-  { url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', tag: 'Anime Action', x: 320, y: 300, rot: 6, w: 170, h: 220, delay: 0.4 },
+  { url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', tag: 'Exploded View', x: 0, y: 30, rot: -6, w: 230, h: 270, delay: 0 },
+  { url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', tag: 'Live UI', x: 240, y: -10, rot: 4, w: 210, h: 290, delay: 0.8 },
+  { url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', tag: 'Map Infographic', x: 35, y: 320, rot: -3, w: 270, h: 170, delay: 1.4 },
+  { url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', tag: 'Anime Action', x: 320, y: 300, rot: 6, w: 170, h: 220, delay: 0.4 },
 ];
 
 export function Hero() {

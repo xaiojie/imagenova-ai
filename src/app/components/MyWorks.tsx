@@ -11,12 +11,12 @@ import {
 } from '../lib/imageApi';
 
 const DEMO_SEEDS: GenerationResult[] = [
-  { id: 'demo-1', url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', prompt: '高科技 VR 头显爆炸视图海报，包含详细组件标注和宣传文案。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 2, seed: 102934, quality: 'ultra', style: '3d', source: 'mock' },
-  { id: 'demo-2', url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', prompt: '手绘水彩城市美食地图，包含编号美食、地标建筑和图例。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 8, seed: 882211, quality: 'ultra', style: 'ink', source: 'mock' },
-  { id: 'demo-3', url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', prompt: '电商直播 UI 样机，叠加聊天、礼物弹窗和商品购买卡片。', ratio: '9:16', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 26, seed: 442019, quality: 'ultra', style: 'product', source: 'mock' },
-  { id: 'demo-4', url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', prompt: '动漫武术对决，传统木质道场内的动态动作场景。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 50, seed: 718273, quality: 'ultra', style: 'anime', source: 'mock' },
-  { id: 'demo-5', url: 'https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg', prompt: '3D 石阶演化信息图，包含照片级生物渲染与侧边栏。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 72, seed: 552012, quality: 'standard', style: '3d', source: 'mock' },
-  { id: 'demo-6', url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', prompt: '赛博美学霓虹肖像，发光眼镜和数学投影。', ratio: '3:4', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 100, seed: 998211, quality: 'ultra', style: 'cyber', source: 'mock' },
+  { id: 'demo-1', url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', prompt: '高科技 VR 头显爆炸视图海报，包含详细组件标注和宣传文案。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 2, seed: 102934, quality: 'ultra', style: '3d', source: 'mock' },
+  { id: 'demo-2', url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', prompt: '手绘水彩城市美食地图，包含编号美食、地标建筑和图例。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 8, seed: 882211, quality: 'ultra', style: 'ink', source: 'mock' },
+  { id: 'demo-3', url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', prompt: '电商直播 UI 样机，叠加聊天、礼物弹窗和商品购买卡片。', ratio: '9:16', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 26, seed: 442019, quality: 'ultra', style: 'product', source: 'mock' },
+  { id: 'demo-4', url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', prompt: '动漫武术对决，传统木质道场内的动态动作场景。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 50, seed: 718273, quality: 'ultra', style: 'anime', source: 'mock' },
+  { id: 'demo-5', url: '/assets/showcase/1776661968404-8a5flm-hgqc-koamaa2vt0-0d1ee4bb.jpg', prompt: '3D 石阶演化信息图，包含照片级生物渲染与侧边栏。', ratio: '16:9', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 72, seed: 552012, quality: 'standard', style: '3d', source: 'mock' },
+  { id: 'demo-6', url: '/assets/showcase/1778921891612-x61gjv-hix-aadakaqoycj-dd3480e1.jpg', prompt: '赛博美学霓虹肖像，发光眼镜和数学投影。', ratio: '3:4', model: 'GPT-image2', createdAt: Date.now() - 1000 * 60 * 60 * 100, seed: 998211, quality: 'ultra', style: 'cyber', source: 'mock' },
 ];
 
 const tabs = [
@@ -71,13 +71,13 @@ export function MyWorksPage() {
   ];
 
   return (
-    <div className="relative">
+    <div className="relative my-works-page">
       {/* Header */}
-      <section className="relative max-w-[1440px] mx-auto px-8 pt-12 pb-8">
+      <section className="relative max-w-[1440px] mx-auto px-8 pt-12 pb-8 my-works-hero">
         <div className="absolute -top-10 left-1/3 w-[500px] h-[500px] rounded-full animate-orb pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3), transparent 60%)', filter: 'blur(60px)' }} />
 
-        <div className="relative flex items-end justify-between mb-8">
+        <div className="relative flex items-end justify-between mb-8 my-works-hero-row">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-pink-400" />
@@ -85,17 +85,17 @@ export function MyWorksPage() {
                 MY WORKS · 我的作品
               </span>
             </div>
-            <h1 style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.05 }}>
+            <h1 className="my-works-title" style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.05 }}>
               Your <span className="text-gradient">creative archive</span>
             </h1>
-            <p className="text-white/55 mt-2" style={{ fontSize: 14 }}>
+            <p className="text-white/55 mt-2 my-works-copy" style={{ fontSize: 14 }}>
               你的所有生成 · Track, organize, and remix every image you've created with GPT-image2.
             </p>
           </div>
 
           <button
             onClick={() => remix({ prompt: '一个全新的创意，例如：水墨意境的未来城市，朦胧光晕，电影感' })}
-            className="btn-glow rounded-2xl px-5 py-3 flex items-center gap-2"
+            className="btn-glow rounded-2xl px-5 py-3 flex items-center gap-2 my-works-create"
             style={{ fontSize: 14, fontWeight: 600 }}
           >
             <Sparkles size={15} /> New Creation
@@ -103,9 +103,9 @@ export function MyWorksPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-4 gap-4 mb-8 my-works-stats">
           {stats.map((s) => (
-            <div key={s.l} className="glass-strong rounded-2xl p-5">
+            <div key={s.l} className="glass-strong rounded-2xl p-5 my-works-stat-card">
               <div className="flex items-baseline justify-between">
                 <div className="text-gradient" style={{ fontSize: 32, fontWeight: 700, fontFamily: 'Space Grotesk' }}>{s.v}</div>
                 <span className="text-white/35" style={{ fontSize: 10.5 }}>{s.cn}</span>
@@ -116,8 +116,8 @@ export function MyWorksPage() {
         </div>
 
         {/* Tabs + controls */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between my-works-toolbar">
+          <div className="flex items-center gap-2 my-works-tabs">
             {tabs.map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -125,7 +125,7 @@ export function MyWorksPage() {
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
-                  className={`glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition ${active ? 'chip-active' : ''}`}
+                  className={`glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition my-works-tab ${active ? 'chip-active' : ''}`}
                   style={{ fontSize: 12.5 }}
                 >
                   <Icon size={13} className={active ? 'text-pink-300' : 'text-white/55'} />
@@ -139,7 +139,7 @@ export function MyWorksPage() {
             })}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 my-works-controls">
             <button onClick={() => setSort((s) => s === 'recent' ? 'trending' : 'recent')} className="glass rounded-xl px-3 py-2 flex items-center gap-1.5 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
               <Clock size={12} /> Sort: Recent
             </button>
@@ -159,11 +159,11 @@ export function MyWorksPage() {
       </section>
 
       {/* Works grid */}
-      <section className="relative max-w-[1440px] mx-auto px-8 pb-16">
+      <section className="relative max-w-[1440px] mx-auto px-8 pb-16 my-works-content">
         {items.length === 0 ? (
           <EmptyState onCreate={() => remix({ prompt: '' })} />
         ) : (
-          <div className={layout === 'grid' ? 'grid grid-cols-4 gap-5' : 'grid grid-cols-4 gap-5'}>
+          <div className={layout === 'grid' ? 'grid grid-cols-4 gap-5 my-works-grid' : 'grid grid-cols-4 gap-5 my-works-grid'}>
             {items.map((w, i) => (
               <WorkCard
                 key={w.id}
@@ -192,7 +192,7 @@ export function MyWorksPage() {
               onClick={() => setActive(null)} />
             <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-              className="fixed top-0 right-0 bottom-0 w-[560px] z-[70] glass-strong border-l border-white/10 overflow-y-auto noise-bg">
+              className="fixed top-0 right-0 bottom-0 w-[560px] z-[70] glass-strong border-l border-white/10 overflow-y-auto noise-bg my-work-drawer">
               <div className="sticky top-0 z-10 backdrop-blur-xl bg-[#0a0816]/60 border-b border-white/5 px-6 py-4 flex items-center justify-between">
                 <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.15em' }}>
                   MY WORK · #{active.id}
@@ -296,6 +296,7 @@ function WorkCard({
       transition={{ delay: (index % 4) * 0.06, duration: 0.55 }}
       whileHover={{ y: -6 }}
       className="group relative rounded-2xl overflow-hidden glass-strong cursor-pointer"
+      data-work-card
       style={{ height: h }}
       onClick={onOpen}
     >

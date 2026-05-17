@@ -47,7 +47,16 @@ function Shell() {
         )}
       </AnimatePresence>
       <Footer />
-      <ImageDetailDrawer item={active} onClose={() => setActive(null)} />
+      <ImageDetailDrawer
+        item={active}
+        onClose={() => setActive(null)}
+        onUpdate={(next) => setActive((cur) => (cur?.id === next.id ? {
+          ...cur,
+          ...next,
+          user: next.author?.user || cur.user,
+          avatar: next.author?.avatar || cur.avatar,
+        } : cur))}
+      />
     </div>
   );
 }

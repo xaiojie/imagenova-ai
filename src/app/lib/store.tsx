@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
-import type { GenerationResult, AspectRatio, AppUser } from './imageApi';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect, useRef } from 'react';
+import { generateImages } from './imageApi';
+import type { GenerationRequest, GenerationResult, AspectRatio, AppUser } from './imageApi';
 
 export type View = 'home' | 'works' | 'prompts';
 export type NavKey = 'home' | 'gallery' | 'prompts' | 'works' | 'pro';
@@ -9,6 +10,14 @@ type RemixSeed = {
   prompt: string;
   ratio?: AspectRatio;
   style?: string;
+};
+
+type GenerationJob = {
+  generating: boolean;
+  progress: number;
+  results: GenerationResult[];
+  error: string | null;
+  batch: number;
 };
 
 interface Store {
@@ -31,6 +40,9 @@ interface Store {
   works: GenerationResult[];
   addWorks: (items: GenerationResult[]) => void;
   removeWork: (id: string) => void;
+  generation: GenerationJob;
+  startGeneration: (request: GenerationRequest) => Promise<void>;
+  setGenerationError: (message: string | null) => void;
 
   remix: (seed: RemixSeed) => void;
   pendingRemix: number; // increments to trigger scroll/focus
@@ -49,7 +61,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [ratio, setRatio] = useState<AspectRatio>('1:1');
   const [style, setStyle] = useState('cinematic');
   const [works, setWorks] = useState<GenerationResult[]>([]);
+  const [generation, setGeneration] = useState<GenerationJob>({
+    generating: false,
+    progress: 0,
+    results: [],
+    error: null,
+    batch: 2,
+  });
   const [pendingRemix, setPendingRemix] = useState(0);
+  const generationRunningRef = useRef(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -58,6 +78,57 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const addWorks = useCallback((items: GenerationResult[]) => {
     setWorks((cur) => [...items, ...cur]);
   }, []);
+
+  const setGenerationError = useCallback((message: string | null) => {
+    setGeneration((cur) => ({ ...cur, error: message }));
+  }, []);
+
+  const startGeneration = useCallback(async (request: GenerationRequest) => {
+    if (generationRunningRef.current) return;
+    generationRunningRef.current = true;
+    const batch = request.n ?? 2;
+    setGeneration({
+      generating: true,
+      progress: 0,
+      results: [],
+      error: null,
+      batch,
+    });
+
+    const ticker = window.setInterval(() => {
+      setGeneration((cur) => ({
+        ...cur,
+        progress: cur.progress >= 92 ? cur.progress : cur.progress + 2 + Math.random() * 3,
+      }));
+    }, 140);
+
+    try {
+      const items = await generateImages(request);
+      addWorks(items);
+      setGeneration((cur) => ({
+        ...cur,
+        generating: false,
+        progress: 100,
+        results: items,
+        error: null,
+        batch,
+      }));
+    } catch (error: any) {
+      setGeneration((cur) => ({
+        ...cur,
+        generating: false,
+        progress: 0,
+        error: error?.message ?? 'Generation failed',
+        batch,
+      }));
+    } finally {
+      window.clearInterval(ticker);
+      generationRunningRef.current = false;
+      window.setTimeout(() => {
+        setGeneration((cur) => (cur.generating ? cur : { ...cur, progress: 0 }));
+      }, 800);
+    }
+  }, [addWorks]);
 
   const removeWork = useCallback((id: string) => {
     setWorks((cur) => cur.filter((w) => w.id !== id));
@@ -81,7 +152,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       value={{
         view, setView, activeNav, setActiveNav, theme, toggleTheme, user, setUser,
         prompt, setPrompt, ratio, setRatio, style, setStyle,
-        works, addWorks, removeWork,
+        works, addWorks, removeWork, generation, startGeneration, setGenerationError,
         remix, pendingRemix,
       }}
     >

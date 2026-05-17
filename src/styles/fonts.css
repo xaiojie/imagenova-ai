@@ -207,6 +207,203 @@ h1, h2, h3, h4, h5 {
     min-height: 0;
   }
 
+  .my-works-page {
+    padding-bottom: 116px;
+  }
+
+  .my-works-hero {
+    padding: 28px 16px 18px !important;
+  }
+
+  .my-works-hero .animate-orb {
+    display: none;
+  }
+
+  .my-works-hero-row {
+    display: block !important;
+    margin-bottom: 18px !important;
+  }
+
+  .my-works-title {
+    font-size: clamp(34px, 11vw, 42px) !important;
+    line-height: 1.04 !important;
+    max-width: 8.5ch;
+  }
+
+  .my-works-copy {
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+    max-width: 25ch;
+  }
+
+  .my-works-create {
+    margin-top: 14px;
+    width: min(100%, 280px);
+    justify-content: center;
+    padding: 13px 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .my-works-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .my-works-stat-card {
+    min-height: 92px;
+    padding: 13px !important;
+    border-radius: 16px !important;
+  }
+
+  .my-works-stat-card > div:first-child {
+    align-items: flex-start !important;
+  }
+
+  .my-works-stat-card .text-gradient {
+    font-size: 28px !important;
+    line-height: 1 !important;
+  }
+
+  .my-works-toolbar {
+    display: block !important;
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .my-works-tabs {
+    overflow-x: auto;
+    padding: 0 16px 10px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .my-works-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .my-works-tab {
+    min-width: 118px;
+    justify-content: center;
+    padding: 11px 12px !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .my-works-controls {
+    overflow-x: auto;
+    padding: 0 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .my-works-controls::-webkit-scrollbar {
+    display: none;
+  }
+
+  .my-works-controls > * {
+    flex-shrink: 0;
+  }
+
+  .my-works-content {
+    padding: 6px 16px 168px !important;
+  }
+
+  .my-works-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .my-works-grid [data-work-card] {
+    height: auto !important;
+    aspect-ratio: 3 / 4.35;
+    border-radius: 18px !important;
+  }
+
+  .my-works-grid [data-work-card] .absolute.top-2\\.5 {
+    left: 8px !important;
+    right: 8px !important;
+  }
+
+  .my-works-grid [data-work-card] .absolute.top-2\\.5 span {
+    font-size: 9px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .my-works-grid [data-work-card] .absolute.bottom-0 {
+    padding: 10px !important;
+  }
+
+  .my-works-grid [data-work-card] p {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .my-works-grid [data-work-card] .opacity-0 {
+    opacity: 1 !important;
+  }
+
+  .my-works-grid [data-work-card] .top-1\\/2 {
+    top: 44% !important;
+  }
+
+  .my-works-grid [data-work-card] .w-9.h-9 {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .my-work-drawer {
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    border-left: 0 !important;
+    padding-bottom: 118px;
+  }
+
+  .my-work-drawer > div {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .my-work-drawer .grid.grid-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .my-work-drawer .grid.grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .fixed.inset-0.z-\\[70\\] {
+    align-items: flex-end !important;
+    padding: 12px !important;
+    padding-bottom: max(96px, calc(env(safe-area-inset-bottom) + 96px)) !important;
+  }
+
+  .fixed.inset-0.z-\\[70\\] aside {
+    max-height: min(78vh, 680px) !important;
+    border-radius: 22px !important;
+  }
+
+  .fixed.inset-0.z-\\[70\\] aside > div:last-child {
+    max-height: calc(min(78vh, 680px) - 54px) !important;
+    padding: 16px !important;
+  }
+
+  header + .my-works-page,
+  header ~ .my-works-page {
+    min-height: calc(100vh - 64px);
+  }
+
+  nav.fixed.bottom-3 {
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .my-works-page * {
+    min-width: 0;
+  }
+
   .btn-glow:hover {
     transform: none;
   }
