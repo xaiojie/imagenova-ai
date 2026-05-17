@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
-import type { GenerationResult, AspectRatio } from './imageApi';
+import type { GenerationResult, AspectRatio, AppUser } from './imageApi';
 
-export type View = 'home' | 'works';
+export type View = 'home' | 'works' | 'prompts';
+export type NavKey = 'home' | 'gallery' | 'prompts' | 'works' | 'pro';
 export type Theme = 'dark' | 'light';
 
 type RemixSeed = {
@@ -13,8 +14,12 @@ type RemixSeed = {
 interface Store {
   view: View;
   setView: (v: View) => void;
+  activeNav: NavKey;
+  setActiveNav: (v: NavKey) => void;
   theme: Theme;
   toggleTheme: () => void;
+  user: AppUser | null;
+  setUser: (user: AppUser | null) => void;
 
   prompt: string;
   setPrompt: (p: string) => void;
@@ -35,7 +40,9 @@ const StoreCtx = createContext<Store | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<View>('home');
+  const [activeNav, setActiveNav] = useState<NavKey>('home');
   const [theme, setTheme] = useState<Theme>('dark');
+  const [user, setUser] = useState<AppUser | null>(null);
   const [prompt, setPrompt] = useState(
     '未来城市中的赛博朋克少女，霓虹反射，电影级光影，超高细节，胶片颗粒，35mm 镜头'
   );
@@ -65,13 +72,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (seed.ratio) setRatio(seed.ratio);
     if (seed.style) setStyle(seed.style);
     setView('home');
+    setActiveNav('home');
     setPendingRemix((n) => n + 1);
   }, []);
 
   return (
     <StoreCtx.Provider
       value={{
-        view, setView, theme, toggleTheme,
+        view, setView, activeNav, setActiveNav, theme, toggleTheme, user, setUser,
         prompt, setPrompt, ratio, setRatio, style, setStyle,
         works, addWorks, removeWork,
         remix, pendingRemix,

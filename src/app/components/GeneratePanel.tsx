@@ -36,7 +36,7 @@ const promptTemplates = [
 ];
 
 export function GeneratePanel() {
-  const { prompt, setPrompt, ratio, setRatio, style, setStyle, addWorks, pendingRemix } = useStore();
+  const { prompt, setPrompt, ratio, setRatio, style, setStyle, addWorks, pendingRemix, user, setUser } = useStore();
   const [tags, setTags] = useState<string[]>(['电影级光影', '超高细节']);
   const [advanced, setAdvanced] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -58,6 +58,7 @@ export function GeneratePanel() {
     getConfig()
       .then((cfg) => {
         setApiConfigured(cfg.hasApiKey);
+        setUser(cfg.user);
         setBatch(Math.min(batch, cfg.membership.maxBatch || 4));
       })
       .catch(() => setApiConfigured(false));
@@ -85,6 +86,10 @@ export function GeneratePanel() {
 
   const start = async () => {
     if (generating || !prompt.trim()) return;
+    if (!user) {
+      setError('请先登录后再生成图片。');
+      return;
+    }
     setError(null);
     setResults([]);
     setGenerating(true);
@@ -122,13 +127,13 @@ export function GeneratePanel() {
   };
 
   return (
-    <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-8 -mt-6 pb-16 scroll-mt-24">
+    <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-4 md:px-8 mt-0 md:-mt-6 pb-12 md:pb-16 scroll-mt-24">
       <div className="relative">
-        <div className="absolute -inset-2 rounded-[32px] opacity-60 blur-2xl"
+        <div className="absolute -inset-2 rounded-[32px] opacity-40 md:opacity-60 blur-2xl"
           style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(251,113,133,0.3))' }} />
 
-        <div className="relative glass-strong rounded-[28px] p-8 noise-bg overflow-hidden">
-          <div className="flex items-center justify-between mb-6">
+        <div className="relative glass-strong rounded-[22px] md:rounded-[28px] p-4 md:p-8 noise-bg overflow-hidden">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5 md:mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #ec4899)' }}>
                 <Wand2 size={18} className="text-white" />
@@ -138,15 +143,15 @@ export function GeneratePanel() {
                 <div className="text-white/50" style={{ fontSize: 12 }}>开始你的创作 · Describe anything, see it come alive</div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2" style={{ fontSize: 11.5 }}>
+            <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 shrink-0" style={{ fontSize: 11.5 }}>
                 {apiConfigured ? (
                   <><CheckCircle2 size={12} className="text-emerald-400" /><span className="text-white/65">Live API connected</span></>
                 ) : (
                   <><AlertCircle size={12} className="text-amber-300" /><span className="text-white/65">Demo mode · set OPENAI_API_KEY on server</span></>
                 )}
               </div>
-              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2" style={{ fontSize: 12 }}>
+              <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 shrink-0" style={{ fontSize: 12 }}>
                 <Cpu size={12} className="text-violet-300" />
                 <span className="text-white/60">Engine</span>
                 <span style={{ fontFamily: 'JetBrains Mono', color: '#f472b6' }}>GPT-image2 · v2.4</span>
@@ -197,18 +202,18 @@ export function GeneratePanel() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             <div>
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>图片比例</span>
                 <span className="text-white/35" style={{ fontSize: 11 }}>Aspect ratio</span>
               </div>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-5 gap-1.5 md:gap-2">
                 {ratios.map((r) => (
                   <button
                     key={r.id}
                     onClick={() => setRatio(r.id)}
-                    className={`glass rounded-xl p-3 flex flex-col items-center gap-1.5 transition hover:bg-white/8 ${ratio === r.id ? 'chip-active' : ''}`}
+                    className={`glass rounded-xl p-2 md:p-3 flex flex-col items-center gap-1.5 transition hover:bg-white/8 ${ratio === r.id ? 'chip-active' : ''}`}
                   >
                     <div className="w-10 h-10 flex items-center justify-center">
                       <div className="border border-white/40 rounded" style={{ width: r.w * 0.7, height: r.h * 0.7 }} />
@@ -225,7 +230,7 @@ export function GeneratePanel() {
                 <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>风格预设</span>
                 <span className="text-white/35" style={{ fontSize: 11 }}>Style preset</span>
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {styles.map((s) => (
                   <button
                     key={s.id}
@@ -284,7 +289,7 @@ export function GeneratePanel() {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-4">
                     <ParamCard label="图片数量" sub="Batch" value={batch}>
                       <input type="range" min={1} max={4} value={batch} onChange={(e) => setBatch(Number(e.target.value))} className="w-full accent-pink-500" />
                     </ParamCard>
@@ -322,7 +327,7 @@ export function GeneratePanel() {
             </AnimatePresence>
           </div>
 
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 grid grid-cols-1 sm:flex sm:items-center gap-3">
             <button
               onClick={start}
               disabled={generating || !prompt.trim()}
@@ -333,7 +338,7 @@ export function GeneratePanel() {
               {generating ? 'GPT-image2 is creating...' : 'Generate Image · 立即生成'}
               {!generating && <Send size={15} />}
             </button>
-            <button className="glass rounded-2xl px-5 py-4 hover:bg-white/8 transition flex items-center gap-2" style={{ fontSize: 13 }}>
+            <button className="glass rounded-2xl px-5 py-4 hover:bg-white/8 transition flex items-center justify-center gap-2" style={{ fontSize: 13 }}>
               <Eye size={14} /> Preview
             </button>
           </div>
@@ -372,7 +377,7 @@ export function GeneratePanel() {
                       <div className="h-full shimmer-bar rounded-full transition-all" style={{ width: `${progress}%` }} />
                     </div>
                   )}
-                  <div className="grid grid-cols-4 gap-2 mt-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
                     {Array.from({ length: batch }).map((_, i) => {
                       const r = results[i];
                       return (

@@ -6,15 +6,19 @@ import { GeneratePanel } from './components/GeneratePanel';
 import { Gallery, GalleryItem } from './components/Gallery';
 import { PromptPresets } from './components/PromptPresets';
 import { UpgradeBanner } from './components/UpgradeBanner';
-import { MobilePreview } from './components/MobilePreview';
 import { Footer } from './components/Footer';
 import { ImageDetailDrawer } from './components/ImageDetailDrawer';
 import { MyWorksPage } from './components/MyWorks';
+import { PromptsPage } from './components/PromptsPage';
+import { AdminPage } from './components/AdminPage';
 import { StoreProvider, useStore } from './lib/store';
 
 function Shell() {
   const { view, theme } = useStore();
   const [active, setActive] = useState<GalleryItem | null>(null);
+  const isAdmin = window.location.pathname === '/admin';
+
+  if (isAdmin) return <AdminPage />;
 
   const bg = theme === 'dark'
     ? 'radial-gradient(ellipse at top, #1a0f3d 0%, #0a0816 40%, #050410 100%)'
@@ -31,11 +35,14 @@ function Shell() {
             <Gallery onOpen={setActive} />
             <PromptPresets />
             <UpgradeBanner />
-            <MobilePreview />
           </motion.div>
-        ) : (
+        ) : view === 'works' ? (
           <motion.div key="works" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}>
             <MyWorksPage />
+          </motion.div>
+        ) : (
+          <motion.div key="prompts" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}>
+            <PromptsPage />
           </motion.div>
         )}
       </AnimatePresence>

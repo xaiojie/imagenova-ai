@@ -9,8 +9,8 @@ const perks = [
 
 export function UpgradeBanner() {
   return (
-    <section id="pro-section" className="relative max-w-[1440px] mx-auto px-8 pb-20">
-      <div className="relative rounded-[28px] overflow-hidden noise-bg" style={{
+    <section id="pro-section" className="relative max-w-[1440px] mx-auto px-4 md:px-8 pb-14 md:pb-20">
+      <div className="relative rounded-[22px] md:rounded-[28px] overflow-hidden noise-bg" style={{
         background: 'linear-gradient(135deg, #1a1235 0%, #2d1547 35%, #471a3e 70%, #1f2952 100%)',
       }}>
         {/* halo orbs */}
@@ -19,13 +19,13 @@ export function UpgradeBanner() {
         <div className="absolute -bottom-32 -left-20 w-[520px] h-[520px] rounded-full animate-orb"
           style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.45), transparent 60%)', filter: 'blur(60px)', animationDelay: '5s' }} />
 
-        <div className="relative grid grid-cols-[1fr_440px] gap-10 p-12 items-center">
+        <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-8 lg:gap-10 p-5 md:p-8 lg:p-12 items-center">
           <div>
             <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-5">
               <Crown size={13} className="text-amber-300" />
               <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#fde68a', letterSpacing: '0.15em' }}>NOVA PRO</span>
             </div>
-            <h2 style={{ fontSize: 42, fontWeight: 700, lineHeight: 1.08 }}>
+            <h2 className="section-title" style={{ fontSize: 42, fontWeight: 700, lineHeight: 1.08 }}>
               Unlock <span className="text-gradient">faster generation</span> <br />
               and private creations
             </h2>
@@ -34,7 +34,7 @@ export function UpgradeBanner() {
               Designed for creators who ship every day.
             </p>
 
-            <div className="grid grid-cols-2 gap-3 mt-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
               {perks.map((p) => {
                 const Icon = p.icon;
                 return (
@@ -54,8 +54,8 @@ export function UpgradeBanner() {
               })}
             </div>
 
-            <div className="flex items-center gap-3 mt-7">
-              <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
+            <div className="grid grid-cols-1 sm:flex sm:items-center gap-3 mt-7">
+              <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
                 <Crown size={15} /> Upgrade Pro <ArrowRight size={14} />
               </button>
               <span className="text-white/45" style={{ fontSize: 12.5 }}>

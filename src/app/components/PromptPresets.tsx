@@ -4,17 +4,17 @@ import { getPromptPresets, PromptPreset, usePromptPreset } from '../lib/imageApi
 import { useStore } from '../lib/store';
 
 const presets = [
-  { title: 'Portrait Photography', cn: '人像摄影', desc: 'Editorial-grade portraits with cinematic skin tones', url: 'https://images.unsplash.com/photo-1664267674275-6017ea4c7f6e?w=600&q=80', tag: '12 templates' },
-  { title: 'Product Poster', cn: '产品海报', desc: 'Studio-lit product posters for ecommerce and ads', url: 'https://images.unsplash.com/photo-1749063294255-719a5ffa9de3?w=600&q=80', tag: '8 templates' },
-  { title: 'Chinese Ink Painting', cn: '国风插画', desc: '水墨意境 · misty mountains, brush textures, poetic', url: 'https://images.unsplash.com/photo-1776883003471-767e3cb7e5eb?w=600&q=80', tag: '10 templates' },
-  { title: 'Sci-Fi Scenes', cn: '科幻场景', desc: 'Spaceships, neon cities, otherworldly architecture', url: 'https://images.unsplash.com/photo-1761942407242-bec5f94898e2?w=600&q=80', tag: '14 templates' },
-  { title: 'Game Characters', cn: '游戏角色', desc: 'Concept art, character sheets, stylized portraits', url: 'https://images.unsplash.com/photo-1559828801-04565cd31e27?w=600&q=80', tag: '9 templates' },
-  { title: 'Architectural Space', cn: '建筑空间', desc: 'Interior renders, futuristic facades, modern spaces', url: 'https://images.unsplash.com/photo-1760662036240-7c9ef0730d79?w=600&q=80', tag: '11 templates' },
+  { title: 'VR Exploded Poster', cn: '产品爆炸图', desc: '高科技 VR 头显组件拆解海报', url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', tag: '18k uses' },
+  { title: 'Foodie City Map', cn: '美食地图', desc: '手绘水彩城市美食旅游地图', url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', tag: '17k uses' },
+  { title: 'Live Commerce UI', cn: '直播样机', desc: '电商直播间叠层 UI 与购买卡片', url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', tag: '16k uses' },
+  { title: 'Anime Martial Duel', cn: '动漫动作', desc: '传统道场中的动态武术对决', url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', tag: '15k uses' },
+  { title: '3D Evolution Steps', cn: '教育信息图', desc: '石阶式演化时间线信息图', url: 'https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg', tag: '14k uses' },
+  { title: 'Cyber Neon Portrait', cn: '赛博头像', desc: '霓虹眼镜与 HUD 投影肖像', url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', tag: '13k uses' },
 ];
 
 export function PromptPresets() {
   const [items, setItems] = useState<PromptPreset[]>([]);
-  const { remix } = useStore();
+  const { remix, setActiveNav, setView } = useStore();
 
   useEffect(() => {
     getPromptPresets({ sort: 'popular' })
@@ -33,8 +33,8 @@ export function PromptPresets() {
   }));
 
   return (
-    <section id="prompts-section" className="relative max-w-[1440px] mx-auto px-8 pb-20">
-      <div className="flex items-end justify-between mb-8">
+    <section id="prompts-section" className="relative max-w-[1440px] mx-auto px-4 md:px-8 pb-14 md:pb-20">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 md:mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-1 h-5 rounded-full bg-gradient-to-b from-amber-300 to-pink-400" />
@@ -42,19 +42,27 @@ export function PromptPresets() {
               PROMPT PRESETS · 提示词广场
             </span>
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 700 }}>
+          <h2 className="section-title" style={{ fontSize: 36, fontWeight: 700 }}>
             Start from a <span className="text-gradient">curated prompt</span>
           </h2>
           <p className="text-white/55 mt-2" style={{ fontSize: 14 }}>
             精选模板 · One click to apply professional-grade prompts to GPT-image2
           </p>
         </div>
-        <button className="text-white/65 hover:text-white flex items-center gap-1.5 transition" style={{ fontSize: 13 }}>
+        <button
+          onClick={() => {
+            setActiveNav('prompts');
+            setView('prompts');
+            requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+          }}
+          className="text-white/65 hover:text-white flex items-center gap-1.5 transition"
+          style={{ fontSize: 13 }}
+        >
           See all · 查看全部 <ArrowRight size={13} />
         </button>
       </div>
 
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
         {visible.map((p, i) => (
           <div
             key={p.title}

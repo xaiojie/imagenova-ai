@@ -80,6 +80,7 @@ export interface AppConfig {
   hasApiKey: boolean;
   model: string;
   providerModel: string;
+  user: AppUser | null;
   membership: {
     plan: string;
     maxBatch: number;
@@ -88,6 +89,66 @@ export interface AppConfig {
     concurrentJobs: number;
     monthlyLimit: number;
     usedThisMonth: number;
+  };
+}
+
+export interface AppUser {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string;
+  role: 'user' | 'admin';
+  plan: 'free' | 'pro';
+  status: 'active' | 'disabled';
+  quota: {
+    monthlyLimit: number;
+    usedThisMonth: number;
+    maxBatch: number;
+    hdDownload: boolean;
+    privateGallery: boolean;
+    concurrentJobs: number;
+  };
+  createdAt: number;
+  lastLoginAt: number | null;
+}
+
+export interface AdminConfig {
+  imageApiBase: string;
+  normalizedImageApiBase: string;
+  imageModel: string;
+  uiModelName: string;
+  hasApiKey: boolean;
+  maskedApiKey: string;
+  port: number;
+}
+
+export interface AdminOverview {
+  users: number;
+  activeUsers: number;
+  works: number;
+  publicWorks: number;
+  liveRenders: number;
+  mockRenders: number;
+  promptPresets: number;
+  usedThisMonth: number;
+  totalLikes: number;
+  totalSaves: number;
+  recent: Array<{
+    id: string;
+    prompt: string;
+    source: ImageSource;
+    createdAt: number;
+    ratio: AspectRatio;
+    public: boolean;
+  }>;
+}
+
+export interface AdminUser extends AppUser {
+  stats: {
+    works: number;
+    publicWorks: number;
+    liveRenders: number;
+    likes: number;
   };
 }
 
@@ -114,6 +175,62 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function getConfig() {
   return api<AppConfig>('/api/health');
+}
+
+export async function getMe() {
+  return api<{ user: AppUser | null; membership: AppConfig['membership'] }>('/api/auth/me');
+}
+
+export async function login(email: string, password: string) {
+  return api<{ user: AppUser; membership: AppConfig['membership'] }>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function register(name: string, email: string, password: string) {
+  return api<{ user: AppUser; membership: AppConfig['membership'] }>('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
+export async function logout() {
+  return api<{ ok: boolean }>('/api/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+}
+
+export async function getAdminConfig() {
+  return api<AdminConfig>('/api/admin/config');
+}
+
+export async function saveAdminConfig(payload: {
+  imageApiBase: string;
+  apiKey?: string;
+  imageModel: string;
+  uiModelName: string;
+}) {
+  return api<AdminConfig & { ok: boolean }>('/api/admin/config', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getAdminOverview() {
+  return api<AdminOverview>('/api/admin/overview');
+}
+
+export async function getAdminUsers() {
+  return api<{ items: AdminUser[] }>('/api/admin/users');
+}
+
+export async function updateAdminUser(id: string, patch: Partial<Pick<AppUser, 'role' | 'plan' | 'status'>>) {
+  return api<{ user: AppUser }>(`/api/admin/users/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
 }
 
 export async function generateImages(req: GenerationRequest): Promise<GenerationResult[]> {

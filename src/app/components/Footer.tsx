@@ -2,9 +2,9 @@ import { Logo } from './Logo';
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/5 mt-10">
-      <div className="max-w-[1440px] mx-auto px-8 py-12 grid grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-10">
-        <div>
+    <footer className="relative border-t border-white/5 mt-4 md:mt-10 pb-24 md:pb-0">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 md:py-12 grid grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr] gap-8 lg:gap-10">
+        <div className="col-span-2 lg:col-span-1">
           <Logo />
           <p className="text-white/45 mt-4 max-w-[320px]" style={{ fontSize: 12.5, lineHeight: 1.6 }}>
             ImageNova AI — A futuristic creative community powered by GPT-image2.
@@ -38,7 +38,7 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <div className="border-t border-white/5 py-5 px-8 max-w-[1440px] mx-auto flex items-center justify-between text-white/35" style={{ fontSize: 11.5 }}>
+      <div className="border-t border-white/5 py-5 px-4 md:px-8 max-w-[1440px] mx-auto flex flex-col md:flex-row gap-2 md:items-center justify-between text-white/35" style={{ fontSize: 11.5 }}>
         <span>© 2026 ImageNova AI · 上海星云智能科技有限公司</span>
         <span style={{ fontFamily: 'JetBrains Mono' }}>Made with ❤︎ in Shanghai · Built for creators</span>
       </div>

@@ -18,18 +18,18 @@ export type GalleryItem = {
 } & Partial<GenerationResult>;
 
 export const galleryItems: GalleryItem[] = [
-  { id: 'g1', url: 'https://images.unsplash.com/photo-1664267665561-24e5c5af0645?w=800&q=80', prompt: 'Cyberpunk woman with neon reflections, cinematic, 35mm film grain, ultra detailed, volumetric light', user: 'aurora.li', avatar: 'A', ratio: '3:4', likes: 2840, saves: 412, h: 420 },
-  { id: 'g2', url: 'https://images.unsplash.com/photo-1766342088275-c3081723881f?w=800&q=80', prompt: 'Abstract liquid dreamscape, iridescent waves, surreal painterly style', user: 'noctis_studio', avatar: 'N', ratio: '16:9', likes: 1923, saves: 287, h: 240 },
-  { id: 'g3', url: 'https://images.unsplash.com/photo-1675733540715-be9e6444c658?w=800&q=80', prompt: 'Portrait bathed in red and blue light, editorial fashion photography, soft skin', user: 'mira.q', avatar: 'M', ratio: '3:4', likes: 5210, saves: 891, h: 460 },
-  { id: 'g4', url: 'https://images.unsplash.com/photo-1774391048185-f947203cf6c0?w=800&q=80', prompt: 'Liquid metal sculpture, soft studio lighting, abstract concept render', user: 'kai.render', avatar: 'K', ratio: '9:16', likes: 3104, saves: 502, h: 500 },
-  { id: 'g5', url: 'https://images.unsplash.com/photo-1761075665827-bf5282094678?w=800&q=80', prompt: 'Neon line geometry, futurist grid, glitch core aesthetic, dark theme', user: 'pixel.dust', avatar: 'P', ratio: '16:9', likes: 1521, saves: 198, h: 260 },
-  { id: 'g6', url: 'https://images.unsplash.com/photo-1668608380298-00f7fbb572d3?w=800&q=80', prompt: 'Pink-haired character close-up, hyperreal skin, cinematic anime lighting', user: 'sienna.r', avatar: 'S', ratio: '3:4', likes: 6912, saves: 1240, h: 440 },
-  { id: 'g7', url: 'https://images.unsplash.com/photo-1748483720632-9d385e40c331?w=800&q=80', prompt: 'A single strawberry on striped blue backdrop, soft pastel product shot', user: 'olive.s', avatar: 'O', ratio: '9:16', likes: 980, saves: 142, h: 500 },
-  { id: 'g8', url: 'https://images.unsplash.com/photo-1761942407242-bec5f94898e2?w=800&q=80', prompt: 'A surreal portal in a stormy field, cinematic concept art', user: 'aeon.fx', avatar: 'A', ratio: '1:1', likes: 4205, saves: 612, h: 380 },
-  { id: 'g9', url: 'https://images.unsplash.com/photo-1614249102574-94b6b58d02ee?w=800&q=80', prompt: 'Woman in green face paint, editorial macro portrait, fashion magazine', user: 'verde.studio', avatar: 'V', ratio: '3:4', likes: 2110, saves: 333, h: 430 },
-  { id: 'g10', url: 'https://images.unsplash.com/photo-1559765431-47b1e9725cee?w=800&q=80', prompt: 'Hooded woman in shadow, moody noir lighting, cinematic high contrast', user: 'kuro.lens', avatar: 'K', ratio: '9:16', likes: 3678, saves: 502, h: 480 },
-  { id: 'g11', url: 'https://images.unsplash.com/photo-1766430032829-7690d470b2ba?w=800&q=80', prompt: 'Purple and teal abstract flow, ethereal digital art, vaporwave dream', user: 'lumen.io', avatar: 'L', ratio: '16:9', likes: 1450, saves: 220, h: 250 },
-  { id: 'g12', url: 'https://images.unsplash.com/photo-1768609956823-f92a042eb320?w=800&q=80', prompt: 'Woman holding burning paper at night, cinematic moody portrait, fire glow', user: 'ember.ai', avatar: 'E', ratio: '3:4', likes: 5089, saves: 712, h: 450 },
+  { id: 'g1', url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', prompt: '高科技 VR 头显的垂直堆叠爆炸视图海报，展示多层内部组件和精致标注。', user: 'YouMind Lab', avatar: 'Y', ratio: '16:9', likes: 2840, saves: 412, h: 360 },
+  { id: 'g2', url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', prompt: '复古羊皮纸上的水彩墨水手绘城市美食地图，包含编号美食、地标和图例。', user: 'Map Studio', avatar: 'M', ratio: '16:9', likes: 1923, saves: 287, h: 300 },
+  { id: 'g3', url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', prompt: '逼真的社交媒体电商直播界面样机，叠加聊天、礼物和商品购买卡片。', user: 'Commerce UI', avatar: 'C', ratio: '9:16', likes: 5210, saves: 891, h: 500 },
+  { id: 'g4', url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', prompt: '动态动漫插画，两名少女在传统木质道场内进行武术对决。', user: 'Anime Dojo', avatar: 'A', ratio: '16:9', likes: 3104, saves: 502, h: 300 },
+  { id: 'g5', url: 'https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg', prompt: '高度逼真的 3D 石阶演化信息图，每一级展示不同生物模型。', user: 'Edu Visual', avatar: 'E', ratio: '16:9', likes: 1521, saves: 198, h: 280 },
+  { id: 'g6', url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', prompt: '赛博美学霓虹肖像，发光眼镜与数学 HUD 投影覆盖面部和夹克。', user: 'Neon Face', avatar: 'N', ratio: '3:4', likes: 6912, saves: 1240, h: 440 },
+  { id: 'g7', url: 'https://cms-assets.youmind.com/media/1778922047354_0u5p7u_HIYbWLOWwAASxOk.jpg', prompt: '粉色 Q 版动漫吉祥物手持三角形标志，适合品牌推广头像。', user: 'Mascot Lab', avatar: 'Q', ratio: '1:1', likes: 980, saves: 142, h: 380 },
+  { id: 'g8', url: 'https://cms-assets.youmind.com/media/1778921879298_86knan_HIX7rmJakAcVvQZ.jpg', prompt: 'Q 版旅行 Vlog 海报，巨大 3D 城市字体内填充地标摄影。', user: 'Vlog Poster', avatar: 'V', ratio: '3:4', likes: 4205, saves: 612, h: 430 },
+  { id: 'g9', url: 'https://cms-assets.youmind.com/media/1778921961875_i1n9vo_HIZVItTbAAAe_3G.jpg', prompt: '深色主题 PowerPoint 风格编辑窗口，展示背景透明的可爱兔图标。', user: 'Slide UI', avatar: 'S', ratio: '4:3', likes: 2110, saves: 333, h: 350 },
+  { id: 'g10', url: 'https://cms-assets.youmind.com/media/1778921884401_0kutj1_HIXcmI3aUAARyej.jpg', prompt: '柔和手工层叠纸雕插画，圆润形状和温暖舒适的纸艺美学。', user: 'Paper Craft', avatar: 'P', ratio: '3:4', likes: 3678, saves: 502, h: 450 },
+  { id: 'g11', url: 'https://cms-assets.youmind.com/media/1778921974908_m837gj_HIV1z88bgAEkx6Z.jpg', prompt: '2×2 照片级逼真眼镜店室内对比拼贴图，标注不同图像模型名称。', user: 'Optic Grid', avatar: 'O', ratio: '16:9', likes: 1450, saves: 220, h: 260 },
+  { id: 'g12', url: 'https://cms-assets.youmind.com/media/1778921976047_imleff_HIV12QFbUAAZ4xY.jpg', prompt: '四格对比拼图，展示不同图像模型重现日本 DX Report 信息图。', user: 'DX Report', avatar: 'D', ratio: '16:9', likes: 5089, saves: 712, h: 300 },
 ];
 
 const filters = [
@@ -79,8 +79,8 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
   items.forEach((it, i) => cols[i % 4].push(it));
 
   return (
-    <section id="gallery-section" className="relative max-w-[1440px] mx-auto px-8 pb-20">
-      <div className="flex items-end justify-between mb-8">
+    <section id="gallery-section" className="relative max-w-[1440px] mx-auto px-4 md:px-8 pb-14 md:pb-20">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6 md:mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-pink-400" />
@@ -88,14 +88,14 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
               PUBLIC GALLERY · 公共图库
             </span>
           </div>
-          <h2 style={{ fontSize: 40, fontWeight: 700 }}>
+          <h2 className="section-title" style={{ fontSize: 40, fontWeight: 700 }}>
             Explore images generated by <span className="text-gradient">creators</span> worldwide
           </h2>
           <p className="text-white/55 mt-2" style={{ fontSize: 14 }}>
             围观全球创作者们用 GPT-image2 生成的精彩作品 · Click any image to view prompt & remix
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1">
           {filters.map((f) => {
             const Icon = f.icon;
             const isActive = active === f.label;
@@ -103,7 +103,7 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
               <button
                 key={f.label}
                 onClick={() => setActive(f.label)}
-                className={`glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition ${isActive ? 'chip-active' : ''}`}
+                className={`glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition shrink-0 ${isActive ? 'chip-active' : ''}`}
                 style={{ fontSize: 12.5 }}
               >
                 <Icon size={13} className={isActive ? 'text-pink-300' : 'text-white/55'} />
@@ -112,13 +112,13 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
               </button>
             );
           })}
-          <button className="glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 12.5 }}>
+          <button className="glass rounded-xl px-3.5 py-2 flex items-center gap-2 hover:bg-white/8 transition shrink-0" style={{ fontSize: 12.5 }}>
             <Filter size={13} className="text-white/55" /> Filters
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
         {cols.map((col, ci) => (
           <div key={ci} className="flex flex-col gap-5">
             {col.map((item, i) => (
@@ -130,7 +130,7 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
                 transition={{ delay: (ci * 0.06) + (i * 0.08), duration: 0.6, ease: 'easeOut' }}
                 whileHover={{ y: -6 }}
                 onClick={() => onOpen(item)}
-                className="group relative rounded-2xl overflow-hidden glass-strong cursor-pointer text-left"
+                className="group relative rounded-2xl overflow-hidden glass-strong cursor-pointer text-left mobile-masonry-card"
                 style={{ height: item.h }}
               >
                 <img src={item.url} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />

@@ -2,10 +2,10 @@ import { ArrowRight, Compass, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const heroImages = [
-  { url: 'https://images.unsplash.com/photo-1668608380298-00f7fbb572d3?w=600&q=80', tag: 'Cyberpunk', x: 0, y: 30, rot: -6, w: 200, h: 270, delay: 0 },
-  { url: 'https://images.unsplash.com/photo-1675733540715-be9e6444c658?w=600&q=80', tag: 'Cinematic', x: 220, y: -10, rot: 4, w: 220, h: 290, delay: 0.8 },
-  { url: 'https://images.unsplash.com/photo-1766430032829-7690d470b2ba?w=600&q=80', tag: '3D Render', x: 60, y: 320, rot: -3, w: 240, h: 170, delay: 1.4 },
-  { url: 'https://images.unsplash.com/photo-1774391048185-f947203cf6c0?w=600&q=80', tag: 'Concept', x: 310, y: 300, rot: 6, w: 160, h: 220, delay: 0.4 },
+  { url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', tag: 'Exploded View', x: 0, y: 30, rot: -6, w: 230, h: 270, delay: 0 },
+  { url: 'https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg', tag: 'Live UI', x: 240, y: -10, rot: 4, w: 210, h: 290, delay: 0.8 },
+  { url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', tag: 'Map Infographic', x: 35, y: 320, rot: -3, w: 270, h: 170, delay: 1.4 },
+  { url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', tag: 'Anime Action', x: 320, y: 300, rot: 6, w: 170, h: 220, delay: 0.4 },
 ];
 
 export function Hero() {
@@ -13,47 +13,47 @@ export function Hero() {
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-50" />
       {/* gradient orbs */}
-      <div className="absolute -top-32 -left-20 w-[520px] h-[520px] rounded-full animate-orb"
+      <div className="absolute -top-32 -left-20 w-[520px] h-[520px] rounded-full animate-orb hidden md:block"
         style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.4), transparent 60%)', filter: 'blur(60px)' }} />
-      <div className="absolute top-20 right-0 w-[600px] h-[600px] rounded-full animate-orb"
+      <div className="absolute top-20 right-0 w-[600px] h-[600px] rounded-full animate-orb hidden md:block"
         style={{ background: 'radial-gradient(circle, rgba(236,72,153,0.35), transparent 60%)', filter: 'blur(70px)', animationDelay: '4s' }} />
-      <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full animate-orb"
+      <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full animate-orb hidden md:block"
         style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.3), transparent 60%)', filter: 'blur(60px)', animationDelay: '8s' }} />
 
-      <div className="relative max-w-[1440px] mx-auto px-8 pt-20 pb-24 grid grid-cols-[1fr_580px] gap-12 items-center">
+      <div className="relative max-w-[1440px] mx-auto px-4 md:px-8 pt-10 md:pt-20 pb-12 md:pb-24 grid grid-cols-1 md:grid-cols-[1fr_580px] gap-8 md:gap-12 items-center">
         <div className="animate-fade-up">
-          <div className="inline-flex items-center gap-2 glass rounded-full px-3.5 py-1.5 mb-6">
+          <div className="inline-flex max-w-full items-center gap-2 glass rounded-full px-3.5 py-1.5 mb-5 md:mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-soft" />
-            <span style={{ fontSize: 12, color: '#a78bfa', fontFamily: 'JetBrains Mono', letterSpacing: '0.1em' }}>
+            <span className="truncate" style={{ fontSize: 12, color: '#a78bfa', fontFamily: 'JetBrains Mono', letterSpacing: '0.1em' }}>
               POWERED BY GPT-IMAGE2
             </span>
-            <span className="text-white/40" style={{ fontSize: 12 }}>· 全新 Nova Engine</span>
+            <span className="text-white/40 hidden sm:inline" style={{ fontSize: 12 }}>· 全新 Nova Engine</span>
           </div>
 
-          <h1 style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02 }}>
+          <h1 className="hero-title" style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02 }}>
             Create stunning <br />
             <span className="text-gradient">AI images</span> with <br />
             GPT-image2
           </h1>
 
-          <p className="mt-6 max-w-[480px] text-white/60" style={{ fontSize: 16, lineHeight: 1.6 }}>
+          <p className="mt-5 md:mt-6 max-w-[480px] text-white/60" style={{ fontSize: 16, lineHeight: 1.6 }}>
             输入灵感，选择风格，一键生成专业级 AI 图像。<br />
             Craft cinematic visuals, character portraits, and dreamscapes — all in seconds.
           </p>
 
-          <div className="mt-9 flex items-center gap-4">
-            <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
+          <div className="mt-7 md:mt-9 grid grid-cols-1 sm:flex sm:items-center gap-3 md:gap-4">
+            <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
               <Sparkles size={16} />
               Start Creating
               <ArrowRight size={15} />
             </button>
-            <button className="glass rounded-2xl px-6 py-3.5 flex items-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 14, fontWeight: 500 }}>
+            <button className="glass rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 14, fontWeight: 500 }}>
               <Compass size={16} className="text-white/70" />
               Explore Gallery
             </button>
           </div>
 
-          <div className="mt-12 flex items-center gap-8">
+          <div className="mt-8 md:mt-12 grid grid-cols-3 gap-4 md:flex md:items-center md:gap-8">
             {[
               { v: '12.4M+', l: 'Images created' },
               { v: '184K', l: 'Active artists' },
@@ -67,8 +67,20 @@ export function Hero() {
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          {heroImages.map((img) => (
+            <div key={img.tag} className="relative aspect-[4/5] rounded-2xl overflow-hidden glass-strong">
+              <img src={img.url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <span className="absolute bottom-2 left-2 right-2 truncate glass rounded-md px-2 py-1 text-white/90" style={{ fontSize: 10, fontFamily: 'JetBrains Mono' }}>
+                {img.tag}
+              </span>
+            </div>
+          ))}
+        </div>
+
         {/* Floating image stack */}
-        <div className="relative h-[560px]">
+        <div className="relative h-[560px] hidden md:block">
           {heroImages.map((img, i) => (
             <motion.div
               key={i}

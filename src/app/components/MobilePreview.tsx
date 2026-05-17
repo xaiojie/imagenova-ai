@@ -1,10 +1,10 @@
 import { Sparkles, Search, Heart, Home, User, Compass, Send, Wand2, Cpu, Bell } from 'lucide-react';
 
 const mobileGallery = [
-  { url: 'https://images.unsplash.com/photo-1664267665561-24e5c5af0645?w=400&q=80', h: 180 },
-  { url: 'https://images.unsplash.com/photo-1766342088275-c3081723881f?w=400&q=80', h: 120 },
-  { url: 'https://images.unsplash.com/photo-1668608380298-00f7fbb572d3?w=400&q=80', h: 200 },
-  { url: 'https://images.unsplash.com/photo-1774391048185-f947203cf6c0?w=400&q=80', h: 150 },
+  { url: 'https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg', h: 180 },
+  { url: 'https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg', h: 120 },
+  { url: 'https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg', h: 200 },
+  { url: 'https://cms-assets.youmind.com/media/1778921891612_x61gjv_HIX_AadakAQoYcj.jpg', h: 150 },
 ];
 
 function Phone({ children, label }: { children: React.ReactNode; label: string }) {
@@ -23,7 +23,7 @@ function Phone({ children, label }: { children: React.ReactNode; label: string }
 
 export function MobilePreview() {
   return (
-    <section className="relative max-w-[1440px] mx-auto px-8 pb-24">
+    <section className="relative max-w-[1440px] mx-auto px-8 pb-24 hidden lg:block">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 mb-2">
           <span className="w-1 h-5 rounded-full bg-gradient-to-b from-sky-400 to-violet-500" />
@@ -127,7 +127,7 @@ export function MobilePreview() {
               <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>SHARE</div>
             </div>
             <div className="rounded-2xl overflow-hidden mb-3 relative">
-              <img src="https://images.unsplash.com/photo-1675733540715-be9e6444c658?w=600&q=80" className="w-full h-[280px] object-cover" />
+              <img src="https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg" className="w-full h-[280px] object-cover" />
               <div className="absolute top-2 left-2 flex gap-1.5">
                 <span className="glass rounded-md px-1.5 py-0.5" style={{ fontSize: 9, fontFamily: 'JetBrains Mono' }}>3:4</span>
                 <span className="glass rounded-md px-1.5 py-0.5 flex items-center gap-1" style={{ fontSize: 9 }}><Cpu size={9} />GPT-image2</span>
