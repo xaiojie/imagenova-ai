@@ -796,8 +796,26 @@ async function callOpenAiImage(req, referenceFile) {
   const endpoint = referenceFile ? `${imageApiBase}/images/edits` : `${imageApiBase}/images/generations`;
   const finalPrompt = buildFinalPrompt(req);
 
-  let res;
-  if (referenceFile) {
+  const fetchImage = async () => {
+    if (!referenceFile) {
+      return fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: imageModel,
+          prompt: finalPrompt,
+          size: ratioToSize[req.ratio],
+          n: req.n,
+          quality: toOpenAiQuality(req.quality),
+          background: 'auto',
+          output_format: 'png',
+        }),
+      });
+    }
+
     const form = new FormData();
     form.append('model', imageModel);
     form.append('prompt', finalPrompt);
@@ -807,29 +825,25 @@ async function callOpenAiImage(req, referenceFile) {
     form.append('background', 'auto');
     form.append('output_format', 'png');
     form.append('image', new Blob([referenceFile.buffer], { type: referenceFile.mimetype }), referenceFile.originalname || 'reference.png');
-    res = await fetch(endpoint, {
+    return fetch(endpoint, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}` },
       body: form,
     });
-  } else {
-    res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: imageModel,
-        prompt: finalPrompt,
-        size: ratioToSize[req.ratio],
-        n: req.n,
-        quality: toOpenAiQuality(req.quality),
-        background: 'auto',
-        output_format: 'png',
-      }),
-    });
+  };
+
+  let res;
+  let lastError;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      res = await fetchImage();
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 600));
+    }
   }
+  if (!res) throw lastError || new Error('Image provider request failed.');
 
   if (!res.ok) {
     const text = await res.text();

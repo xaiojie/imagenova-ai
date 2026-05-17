@@ -163,10 +163,17 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   if (!res.ok) {
     let message = `API ${res.status}`;
     try {
-      const body = await res.json();
-      message = body.error || message;
+      const text = await res.text();
+      if (text) {
+        try {
+          const body = JSON.parse(text);
+          message = body.error || body.message || message;
+        } catch {
+          message = text;
+        }
+      }
     } catch {
-      message = await res.text();
+      message = res.statusText || message;
     }
     throw new Error(message);
   }
