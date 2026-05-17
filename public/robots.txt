@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://www.papaclaoud.top/sitemap.xml
+Sitemap: https://papajay.icu/sitemap.xml
