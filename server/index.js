@@ -8,6 +8,7 @@ import { createWriteStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { randomBytes, scryptSync, timingSafeEqual, createHash } from 'node:crypto';
 import mysql from 'mysql2/promise';
+import { createClient } from 'redis';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,9 +26,15 @@ const SESSION_COOKIE = 'imagenova_session';
 const SESSION_TTL = 1000 * 60 * 60 * 24 * 7;
 const IMAGE_PROVIDER_TIMEOUT_MS = Number(process.env.IMAGE_PROVIDER_TIMEOUT_MS || 300000);
 const DATA_DRIVER = process.env.DATA_DRIVER === 'mysql' ? 'mysql' : 'json';
+const REDIS_URL = String(process.env.REDIS_URL || '').trim();
+const GENERATION_QUEUE_KEY = 'imagenova:generation:queue';
+const GENERATION_JOB_TTL_SECONDS = Number(process.env.GENERATION_JOB_TTL_SECONDS || 60 * 60);
 const generationJobs = new Map();
 let dbWriteQueue = Promise.resolve();
 let mysqlPool;
+let redisClient;
+let redisWorkerClient;
+let redisReady = false;
 let dataReady = false;
 
 const upload = multer({
@@ -86,6 +93,79 @@ function getMysqlPool() {
     });
   }
   return mysqlPool;
+}
+
+async function initRedis() {
+  if (!REDIS_URL) {
+    console.log('Redis not configured; generation jobs use in-memory queue.');
+    return;
+  }
+
+  try {
+    redisClient = createClient({ url: REDIS_URL });
+    redisClient.on('error', (error) => console.error('[redis] client error:', error.message));
+    await redisClient.connect();
+    redisReady = true;
+    console.log('Redis generation queue enabled.');
+  } catch (error) {
+    redisReady = false;
+    redisClient = null;
+    console.error('[redis] failed to connect; falling back to in-memory queue:', error.message);
+  }
+}
+
+function redisJobKey(jobId) {
+  return `imagenova:generation:job:${jobId}`;
+}
+
+async function saveGenerationJob(job) {
+  if (redisReady && redisClient) {
+    await redisClient.set(redisJobKey(job.id), JSON.stringify(job), { EX: GENERATION_JOB_TTL_SECONDS });
+    return;
+  }
+  generationJobs.set(job.id, job);
+}
+
+async function getGenerationJob(jobId) {
+  if (redisReady && redisClient) {
+    const raw = await redisClient.get(redisJobKey(jobId));
+    return raw ? JSON.parse(raw) : null;
+  }
+  return generationJobs.get(jobId) || null;
+}
+
+async function enqueueGenerationJob(job) {
+  await saveGenerationJob(job);
+  if (redisReady && redisClient) {
+    await redisClient.rPush(GENERATION_QUEUE_KEY, job.id);
+    return;
+  }
+  setImmediate(() => runGenerationJob(job));
+}
+
+async function startRedisGenerationWorker() {
+  if (!redisReady || !redisClient) return;
+  redisWorkerClient = redisClient.duplicate();
+  redisWorkerClient.on('error', (error) => console.error('[redis] worker error:', error.message));
+  await redisWorkerClient.connect();
+
+  const loop = async () => {
+    while (redisReady) {
+      try {
+        const result = await redisWorkerClient.brPop(GENERATION_QUEUE_KEY, 0);
+        const jobId = result?.element;
+        if (!jobId) continue;
+        const job = await getGenerationJob(jobId);
+        if (!job || !['queued', 'running'].includes(job.status)) continue;
+        await runGenerationJob(job);
+      } catch (error) {
+        console.error('[redis] generation worker failed:', error.message);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+  };
+
+  loop();
 }
 
 function maskApiKey(key) {
@@ -846,7 +926,8 @@ async function callOpenAiImage(req, referenceFile) {
     form.append('quality', toOpenAiQuality(req.quality));
     form.append('background', 'auto');
     form.append('output_format', 'png');
-    form.append('image', new Blob([referenceFile.buffer], { type: referenceFile.mimetype }), referenceFile.originalname || 'reference.png');
+    const referenceBuffer = referenceFile.buffer || await fs.readFile(referenceFile.storedPath);
+    form.append('image', new Blob([referenceBuffer], { type: referenceFile.mimetype }), referenceFile.originalname || 'reference.png');
     try {
       return await fetch(endpoint, {
         ...options,
@@ -984,6 +1065,7 @@ function serializeGenerationJob(job) {
 }
 
 function scheduleGenerationJobCleanup(jobId) {
+  if (redisReady) return;
   setTimeout(() => generationJobs.delete(jobId), 1000 * 60 * 30).unref?.();
 }
 
@@ -1039,18 +1121,21 @@ async function runGenerationJob(job) {
   job.status = 'running';
   job.progress = 10;
   job.updatedAt = now();
+  await saveGenerationJob(job);
   try {
     const records = await createGenerationRecords(job.body, job.referenceFile, job.referenceImage, job.user);
     job.records = records;
     job.status = 'succeeded';
     job.progress = 100;
     job.updatedAt = now();
+    await saveGenerationJob(job);
   } catch (error) {
     job.status = 'failed';
     job.progress = 100;
     job.error = error.message || '生成失败。';
     job.detail = error.detail || null;
     job.updatedAt = now();
+    await saveGenerationJob(job);
   } finally {
     scheduleGenerationJobCleanup(job.id);
   }
@@ -1429,12 +1514,19 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
     body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
 
     const referenceImage = await saveReference(req.file);
+    const referenceFile = req.file && referenceImage
+      ? {
+          storedPath: path.join(uploadDir, path.basename(referenceImage)),
+          mimetype: req.file.mimetype,
+          originalname: req.file.originalname || 'reference.png',
+        }
+      : null;
     const job = {
       id: id('job'),
       ownerId: user.id,
-      user,
+      user: sanitizeUser(user),
       body,
-      referenceFile: req.file || null,
+      referenceFile,
       referenceImage,
       records: [],
       status: 'queued',
@@ -1444,8 +1536,7 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
       createdAt: now(),
       updatedAt: now(),
     };
-    generationJobs.set(job.id, job);
-    setImmediate(() => runGenerationJob(job));
+    await enqueueGenerationJob(job);
     res.status(202).json({ job: serializeGenerationJob(job) });
   } catch (error) {
     res.status(500).json({ error: error.message || '创建生成任务失败。' });
@@ -1455,7 +1546,7 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
 app.get('/api/generate/jobs/:id', async (req, res) => {
   const auth = await requireUser(req, res);
   if (!auth) return;
-  const job = generationJobs.get(req.params.id);
+  const job = await getGenerationJob(req.params.id);
   if (!assertGenerationJobAccess(job, auth.user)) return res.status(404).json({ error: '生成任务不存在或已过期。' });
   res.json({ job: serializeGenerationJob(job) });
 });
@@ -1599,6 +1690,8 @@ app.use((err, _req, res, _next) => {
 });
 
 await ensureData();
+await initRedis();
+await startRedisGenerationWorker();
 app.listen(PORT, '127.0.0.1', () => {
   const { apiKey, imageModel } = getRuntimeConfig();
   console.log(`ImageNova API listening on http://127.0.0.1:${PORT}`);

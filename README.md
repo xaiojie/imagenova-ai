@@ -82,6 +82,9 @@ cp .env.example .env
 | `IMAGE_MODEL` | 后端实际调用的模型 ID，默认 `gpt-image-1` |
 | `UI_MODEL_NAME` | 前端展示的模型名，默认 `GPT-image2` |
 | `PORT` | 后端端口，默认 `8787` |
+| `REDIS_URL` | 可选 Redis 地址；配置后生成任务使用 Redis 队列 |
+| `GENERATION_JOB_TTL_SECONDS` | 生成任务状态保留时间，默认 `3600` |
+| `IMAGE_PROVIDER_TIMEOUT_MS` | 单次上游生图请求超时，默认 `300000` |
 
 ### 3. 启动后端 API
 
