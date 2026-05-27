@@ -1313,16 +1313,17 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     const { user } = auth;
     const { apiKey } = getRuntimeConfig();
     const body = normalizeGenerationBody(req.body);
-    if (!body.prompt) return res.status(400).json({ error: 'Prompt is required.' });
-    if (body.prompt.length > 1500) return res.status(400).json({ error: 'Prompt must be 1500 characters or less.' });
+    if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
+    if (body.prompt.length > 1500) return res.status(400).json({ error: '提示词不能超过 1500 个字符。' });
 
     const membership = membershipForUser(user);
     const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
-    if (remaining <= 0) return res.status(402).json({ error: 'Monthly generation quota has been used up.' });
+    if (remaining <= 0) return res.status(402).json({ error: '本月生成额度已用完。' });
     body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
     const referenceImage = await saveReference(req.file);
 
     let records = [];
+    let liveGenerationError = null;
     if (apiKey) {
       try {
         const apiItems = await callOpenAiImages(body, req.file);
@@ -1332,13 +1333,21 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
           records.push({ ...createImageRecord(body, url, 'api', i, referenceImage, user), id: imageId });
         }
       } catch (error) {
+        liveGenerationError = error;
+        console.error('[image-provider] live generation failed:', error);
         await updateDb((db) => {
-          db.notifications.unshift({ id: id('n'), type: 'warning', title: 'Live generation failed', body: error.message, read: false, createdAt: now() });
+          db.notifications.unshift({ id: id('n'), type: 'warning', title: '真实图片生成失败', body: error.message, read: false, createdAt: now() });
         });
       }
     }
 
     if (records.length === 0) {
+      if (apiKey && liveGenerationError) {
+        return res.status(502).json({
+          error: '图片生成接口调用失败，未使用演示图片替代。请检查接口地址、密钥或模型配置。',
+          detail: liveGenerationError.message,
+        });
+      }
       await new Promise((resolve) => setTimeout(resolve, 800));
       records = Array.from({ length: body.n }).map((_, i) => createImageRecord(body, mockPool[(now() + i) % mockPool.length], 'mock', i, referenceImage, user));
     }
@@ -1353,7 +1362,7 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     });
     res.json({ items: records, source: records[0]?.source || 'mock' });
   } catch (error) {
-    res.status(500).json({ error: error.message || 'Generation failed.' });
+    res.status(500).json({ error: error.message || '生成失败。' });
   }
 });
 
@@ -1377,7 +1386,7 @@ app.get('/api/gallery', async (req, res) => {
   const user = getUserFromDb(db, req);
   const publicImages = hydrateImages(db, db.images.filter((i) => i.public), user);
   const filtered = filterImages(publicImages, req.query);
-  const sorted = sortImages(filtered, req.query.sort || req.query.filter || 'trending');
+  const sorted = sortImages(filtered, req.query.sort || req.query.filter || 'recent');
   res.json(paginate(sorted, req.query));
 });
 

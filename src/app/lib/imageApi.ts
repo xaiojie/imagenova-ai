@@ -244,7 +244,7 @@ export async function generateImages(req: GenerationRequest): Promise<Generation
   const form = new FormData();
   form.append('prompt', req.prompt);
   form.append('ratio', req.ratio);
-  form.append('n', String(req.n ?? 2));
+  form.append('n', String(req.n ?? 1));
   form.append('quality', req.quality ?? 'ultra');
   form.append('seed', String(req.seed ?? Math.floor(Math.random() * 1_000_000)));
   form.append('style', req.style ?? 'cinematic');

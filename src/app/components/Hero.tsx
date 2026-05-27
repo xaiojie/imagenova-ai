@@ -2,10 +2,10 @@ import { ArrowRight, Compass, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const heroImages = [
-  { url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', tag: 'Exploded View', x: 0, y: 30, rot: -6, w: 230, h: 270, delay: 0 },
-  { url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', tag: 'Live UI', x: 240, y: -10, rot: 4, w: 210, h: 290, delay: 0.8 },
-  { url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', tag: 'Map Infographic', x: 35, y: 320, rot: -3, w: 270, h: 170, delay: 1.4 },
-  { url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', tag: 'Anime Action', x: 320, y: 300, rot: 6, w: 170, h: 220, delay: 0.4 },
+  { url: '/assets/showcase/1776658772018-lukyfw-hgsufldbiaeimwz-b0eb3f27.jpg', tag: '产品爆炸图', x: 0, y: 30, rot: -6, w: 230, h: 270, delay: 0 },
+  { url: '/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg', tag: '直播界面', x: 240, y: -10, rot: 4, w: 210, h: 290, delay: 0.8 },
+  { url: '/assets/showcase/1776662673014-nf0taw-hgrmndybsaagg88-72e7da42.jpg', tag: '地图信息图', x: 35, y: 320, rot: -3, w: 270, h: 170, delay: 1.4 },
+  { url: '/assets/showcase/1776756799880-c8u8w7-hgukjjaasaavvra-a99be45a.jpg', tag: '动漫动作', x: 320, y: 300, rot: 6, w: 170, h: 220, delay: 0.4 },
 ];
 
 export function Hero() {
@@ -25,39 +25,39 @@ export function Hero() {
           <div className="inline-flex max-w-full items-center gap-2 glass rounded-full px-3.5 py-1.5 mb-5 md:mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-soft" />
             <span className="truncate" style={{ fontSize: 12, color: '#a78bfa', fontFamily: 'JetBrains Mono', letterSpacing: '0.1em' }}>
-              POWERED BY GPT-IMAGE2
+              GPT-IMAGE2 驱动
             </span>
-            <span className="text-white/40 hidden sm:inline" style={{ fontSize: 12 }}>· 全新 Nova Engine</span>
+            <span className="text-white/40 hidden sm:inline" style={{ fontSize: 12 }}>· 全新图像引擎</span>
           </div>
 
           <h1 className="hero-title" style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02 }}>
-            Create stunning <br />
-            <span className="text-gradient">AI images</span> with <br />
-            GPT-image2
+            用 GPT-image2 <br />
+            生成惊艳的 <br />
+            <span className="text-gradient">AI 图像</span>
           </h1>
 
           <p className="mt-5 md:mt-6 max-w-[480px] text-white/60" style={{ fontSize: 16, lineHeight: 1.6 }}>
             输入灵感，选择风格，一键生成专业级 AI 图像。<br />
-            Craft cinematic visuals, character portraits, and dreamscapes — all in seconds.
+            电影感画面、角色肖像、梦幻场景，都能快速完成。
           </p>
 
           <div className="mt-7 md:mt-9 grid grid-cols-1 sm:flex sm:items-center gap-3 md:gap-4">
             <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
               <Sparkles size={16} />
-              Start Creating
+              开始创作
               <ArrowRight size={15} />
             </button>
             <button className="glass rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 14, fontWeight: 500 }}>
               <Compass size={16} className="text-white/70" />
-              Explore Gallery
+              浏览图库
             </button>
           </div>
 
           <div className="mt-8 md:mt-12 grid grid-cols-3 gap-4 md:flex md:items-center md:gap-8">
             {[
-              { v: '12.4M+', l: 'Images created' },
-              { v: '184K', l: 'Active artists' },
-              { v: '4.8s', l: 'Avg. render' },
+              { v: '12.4M+', l: '累计作品' },
+              { v: '184K', l: '活跃创作者' },
+              { v: '4.8s', l: '平均生成' },
             ].map((s) => (
               <div key={s.l}>
                 <div className="text-gradient" style={{ fontSize: 24, fontWeight: 700, fontFamily: 'Space Grotesk' }}>{s.v}</div>

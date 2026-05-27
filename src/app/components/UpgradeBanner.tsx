@@ -1,10 +1,10 @@
 import { Zap, Lock, Layers, Image as ImageIcon, ArrowRight, Crown } from 'lucide-react';
 
 const perks = [
-  { icon: Zap, t: 'Faster generation', cn: '极速渲染', d: '4× the priority on the Nova queue' },
-  { icon: Lock, t: 'Private creations', cn: '私密图库', d: 'Keep your works invisible to others' },
-  { icon: ImageIcon, t: 'HD export', cn: '高清导出', d: '4K & PNG with no watermark' },
-  { icon: Layers, t: 'More concurrency', cn: '并发任务', d: 'Up to 8 parallel renders' },
+  { icon: Zap, t: '极速渲染', d: '更高优先级的生成队列' },
+  { icon: Lock, t: '私密图库', d: '作品默认仅自己可见' },
+  { icon: ImageIcon, t: '高清导出', d: '支持高清图片下载' },
+  { icon: Layers, t: '更多并发', d: '同时处理更多生成任务' },
 ];
 
 export function UpgradeBanner() {
@@ -23,15 +23,14 @@ export function UpgradeBanner() {
           <div>
             <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-5">
               <Crown size={13} className="text-amber-300" />
-              <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#fde68a', letterSpacing: '0.15em' }}>NOVA PRO</span>
+              <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#fde68a', letterSpacing: '0.15em' }}>会员中心</span>
             </div>
             <h2 className="section-title" style={{ fontSize: 42, fontWeight: 700, lineHeight: 1.08 }}>
-              Unlock <span className="text-gradient">faster generation</span> <br />
-              and private creations
+              解锁 <span className="text-gradient">更快生成</span> <br />
+              和私密创作能力
             </h2>
             <p className="text-white/60 mt-4 max-w-[460px]" style={{ fontSize: 14.5, lineHeight: 1.6 }}>
-              释放 GPT-image2 的完整能力 · 更快的生成速度、私密图库、高清导出与更多并发任务。
-              Designed for creators who ship every day.
+              释放 GPT-image2 的完整能力：更快的生成速度、私密图库、高清导出与更多并发任务。
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
@@ -45,7 +44,6 @@ export function UpgradeBanner() {
                     <div className="min-w-0">
                       <div className="flex items-baseline gap-1.5">
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{p.t}</span>
-                        <span className="text-white/40" style={{ fontSize: 10.5 }}>{p.cn}</span>
                       </div>
                       <div className="text-white/50 mt-0.5" style={{ fontSize: 11.5 }}>{p.d}</div>
                     </div>
@@ -56,10 +54,10 @@ export function UpgradeBanner() {
 
             <div className="grid grid-cols-1 sm:flex sm:items-center gap-3 mt-7">
               <button className="btn-glow rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2" style={{ fontSize: 14, fontWeight: 600 }}>
-                <Crown size={15} /> Upgrade Pro <ArrowRight size={14} />
+                <Crown size={15} /> 升级会员 <ArrowRight size={14} />
               </button>
               <span className="text-white/45" style={{ fontSize: 12.5 }}>
-                ¥68 / mo · 限时首月 ¥38 · Cancel anytime
+                ¥68 / 月 · 限时首月 ¥38 · 可随时取消
               </span>
             </div>
           </div>
@@ -70,12 +68,12 @@ export function UpgradeBanner() {
             <div className="relative glass-strong rounded-[24px] p-7">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <div className="text-white/55" style={{ fontSize: 12 }}>Nova Pro Monthly</div>
+                  <div className="text-white/55" style={{ fontSize: 12 }}>月度会员</div>
                   <div className="flex items-baseline gap-2 mt-1">
                     <span className="text-gradient" style={{ fontSize: 48, fontWeight: 700, fontFamily: 'Space Grotesk' }}>¥38</span>
-                    <span className="text-white/50" style={{ fontSize: 13 }}>/ first month</span>
+                    <span className="text-white/50" style={{ fontSize: 13 }}>/ 首月</span>
                   </div>
-                  <div className="text-white/35 line-through" style={{ fontSize: 12 }}>then ¥68/mo</div>
+                  <div className="text-white/35 line-through" style={{ fontSize: 12 }}>之后 ¥68/月</div>
                 </div>
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fde68a, #f472b6)' }}>
                   <Crown size={20} className="text-black/80" />
@@ -84,11 +82,11 @@ export function UpgradeBanner() {
 
               <div className="space-y-2.5">
                 {[
-                  '∞ Generations per month',
-                  '4K HD downloads',
-                  'Private gallery & folders',
-                  'Priority Nova queue',
-                  'Commercial license',
+                  '每月不限量生成',
+                  '高清图片下载',
+                  '私密图库与文件夹',
+                  '优先生成队列',
+                  '商业使用授权',
                 ].map((f) => (
                   <div key={f} className="flex items-center gap-2.5">
                     <span className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #34d399, #6366f1)' }}>
@@ -100,7 +98,7 @@ export function UpgradeBanner() {
               </div>
 
               <div className="mt-5 pt-5 border-t border-white/10 flex items-center justify-between text-white/45" style={{ fontSize: 11 }}>
-                <span>Trusted by 184k+ creators</span>
+                <span>已有 18.4 万创作者使用</span>
                 <span style={{ fontFamily: 'JetBrains Mono' }}>SOC2 · ISO27001</span>
               </div>
             </div>

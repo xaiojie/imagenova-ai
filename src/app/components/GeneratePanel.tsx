@@ -8,31 +8,54 @@ import {
 import { useStore } from '../lib/store';
 import {
   getConfig, getInspiration, imageAction, imageDownloadUrl,
-  AspectRatio, ImageQuality,
+  AspectRatio, ImageQuality, GenerationResult,
 } from '../lib/imageApi';
+import { ImageDetailDrawer } from './ImageDetailDrawer';
+import type { GalleryItem } from './Gallery';
 
 const ratios: { id: AspectRatio; label: string; sub: string; w: number; h: number }[] = [
-  { id: '1:1', label: '1:1', sub: 'Square', w: 28, h: 28 },
-  { id: '16:9', label: '16:9', sub: 'Landscape', w: 36, h: 22 },
-  { id: '9:16', label: '9:16', sub: 'Portrait', w: 22, h: 36 },
-  { id: '4:3', label: '4:3', sub: 'Classic', w: 32, h: 24 },
-  { id: '3:4', label: '3:4', sub: 'Poster', w: 24, h: 32 },
+  { id: '1:1', label: '1:1', sub: '方图', w: 28, h: 28 },
+  { id: '16:9', label: '16:9', sub: '横图', w: 36, h: 22 },
+  { id: '9:16', label: '9:16', sub: '竖图', w: 22, h: 36 },
+  { id: '4:3', label: '4:3', sub: '经典', w: 32, h: 24 },
+  { id: '3:4', label: '3:4', sub: '海报', w: 24, h: 32 },
 ];
 
 const styles = [
-  { id: 'cinematic', label: 'Cinematic', cn: '电影感', color: 'from-amber-400 to-rose-500' },
-  { id: 'realistic', label: 'Realistic', cn: '写实', color: 'from-stone-300 to-stone-500' },
-  { id: 'anime', label: 'Anime', cn: '动漫', color: 'from-pink-400 to-violet-500' },
-  { id: 'product', label: 'Product Shot', cn: '产品', color: 'from-sky-300 to-blue-500' },
-  { id: 'concept', label: 'Concept Art', cn: '概念', color: 'from-violet-400 to-fuchsia-500' },
-  { id: 'cyber', label: 'Cyberpunk', cn: '赛博', color: 'from-cyan-400 to-pink-500' },
-  { id: 'ink', label: 'Chinese Ink', cn: '国风水墨', color: 'from-slate-300 to-slate-500' },
-  { id: '3d', label: '3D Render', cn: '三维', color: 'from-emerald-300 to-teal-500' },
+  { id: 'cinematic', label: '电影感', cn: '光影叙事', color: 'from-amber-400 to-rose-500' },
+  { id: 'realistic', label: '写实摄影', cn: '真实质感', color: 'from-stone-300 to-stone-500' },
+  { id: 'anime', label: '动漫插画', cn: '角色场景', color: 'from-pink-400 to-violet-500' },
+  { id: 'product', label: '产品海报', cn: '商业摄影', color: 'from-sky-300 to-blue-500' },
+  { id: 'concept', label: '概念设计', cn: '世界观', color: 'from-violet-400 to-fuchsia-500' },
+  { id: 'cyber', label: '赛博朋克', cn: '霓虹未来', color: 'from-cyan-400 to-pink-500' },
+  { id: 'ink', label: '国风水墨', cn: '东方意境', color: 'from-slate-300 to-slate-500' },
+  { id: '3d', label: '三维渲染', cn: '立体材质', color: 'from-emerald-300 to-teal-500' },
 ];
 
 const promptTemplates = [
   '电影级光影', '超高细节', '真实摄影质感', '柔和体积光',
   '高级商业海报', 'iPhone 摄影质感', '景深虚化', '黄金时刻',
+];
+
+const qualityOptions: Array<{ value: ImageQuality; label: string; desc: string }> = [
+  { value: 'standard', label: '标准', desc: '速度优先' },
+  { value: 'hd', label: '高清', desc: '细节增强' },
+  { value: 'ultra', label: '超清', desc: '默认推荐' },
+];
+
+const randomPrompts = [
+  '一款透明玻璃质感的智能耳机悬浮在柔和浅灰背景中，内部结构若隐若现，摄影棚柔光，金属边缘高光，商业产品海报，画面干净高级',
+  '雨后清晨的江南老街，青石板反射微光，白墙黑瓦、红色纸伞和远处茶馆灯笼，空气中有薄雾，电影级构图，真实摄影质感',
+  '新中式茶饮新品海报，中央是一杯山柚观音冷泡茶，杯壁凝结水珠，背景为宣纸纹理和淡墨山水，标题区留白充足，轻奢商业视觉',
+  '一只宇航员猫站在月球边缘眺望蓝色地球，宇航服细节真实，星空深邃，柔和轮廓光，童话感与科幻感结合，适合竖版海报',
+  '未来城市空中图书馆，巨大的圆形书架漂浮在云层之间，读者坐在透明悬浮舱中阅读，暖色日落光，宏大概念艺术，细节丰富',
+  '复古胶片风格的海边便利店夜景，蓝色霓虹招牌、自动贩卖机、湿润路面和远处海浪，画面安静治愈，35mm 胶片颗粒',
+  '高端香水瓶产品摄影，透明瓶身置于浅水台面，周围有白色花瓣和细小水波，逆光折射出彩色光斑，极简奢侈品广告质感',
+  '国风水墨山谷中的未来列车，银色车身穿过云雾和松林，远山留白，局部有青绿色光轨，传统水墨与科幻工业设计融合',
+  '可爱的原创动漫角色设定表，包含正面、侧面、背面、三种表情和配色板，白底干净排版，服装细节清晰，适合角色设计展示',
+  '博物馆级信息图海报，主题为一台复古机械相机的结构拆解，包含镜头、快门、胶卷仓和机身材质标注，米白纸张背景，中文注释清晰',
+  '冬日咖啡馆窗边的写实照片，一杯热拿铁、翻开的书和毛线围巾放在木桌上，窗外飘雪，暖色室内灯光，浅景深，安静温柔',
+  '大型游戏场景概念图，古代遗迹被巨树根系缠绕，中央有发光石门，探险者举着火把站在入口前，体积光、尘埃粒子、史诗氛围',
 ];
 
 export function GeneratePanel() {
@@ -43,12 +66,13 @@ export function GeneratePanel() {
   const [tags, setTags] = useState<string[]>(['电影级光影', '超高细节']);
   const [advanced, setAdvanced] = useState(true);
   const [apiConfigured, setApiConfigured] = useState(false);
-  const [batch, setBatch] = useState(2);
+  const [batch, setBatch] = useState(1);
   const [quality, setQuality] = useState<ImageQuality>('ultra');
   const [creativity, setCreativity] = useState(7.5);
   const [seed, setSeed] = useState(982134);
   const [publish, setPublish] = useState(true);
   const [reference, setReference] = useState<File | null>(null);
+  const [activeResult, setActiveResult] = useState<GalleryItem | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -58,7 +82,7 @@ export function GeneratePanel() {
       .then((cfg) => {
         setApiConfigured(cfg.hasApiKey);
         setUser(cfg.user);
-        setBatch((current) => Math.min(current, cfg.membership.maxBatch || 4));
+        setBatch((current) => Math.min(current, 1));
       })
       .catch(() => setApiConfigured(false));
   }, []);
@@ -79,8 +103,16 @@ export function GeneratePanel() {
       const next = await getInspiration(prompt, style);
       setPrompt(next.prompt);
     } catch (e: any) {
-      setGenerationError(e?.message ?? 'Inspiration failed');
+      setGenerationError(e?.message ?? '灵感生成失败');
     }
+  };
+
+  const randomizePrompt = () => {
+    const candidates = randomPrompts.filter((item) => item !== prompt);
+    const next = candidates[Math.floor(Math.random() * candidates.length)] || randomPrompts[0];
+    setPrompt(next);
+    setGenerationError(null);
+    window.setTimeout(() => taRef.current?.focus(), 0);
   };
 
   const start = async () => {
@@ -103,15 +135,35 @@ export function GeneratePanel() {
     });
   };
 
+  const handleBatchChange = (value: number) => {
+    if (value > 1) {
+      setBatch(1);
+      setGenerationError('批量生成属于会员功能，敬请期待。');
+      return;
+    }
+    setBatch(1);
+    setGenerationError(null);
+  };
+
   const generating = generation.generating;
   const progress = generation.progress;
   const results = generation.results;
   const error = generation.error;
   const previewSlots = generating ? generation.batch : Math.max(batch, results.length);
+  const qualityLabel = qualityOptions.find((item) => item.value === quality)?.label || '超清';
+  const toDetailItem = (item: GenerationResult): GalleryItem => ({
+    ...item,
+    user: item.author?.user || user?.name || '我的作品',
+    avatar: item.author?.avatar || user?.avatar || '我',
+    likes: item.likes ?? 0,
+    saves: item.saves ?? 0,
+    h: 360,
+  });
 
   return (
-    <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-4 md:px-8 mt-0 md:-mt-6 pb-12 md:pb-16 scroll-mt-24">
-      <div className="relative">
+    <>
+      <section ref={panelRef} className="relative max-w-[1440px] mx-auto px-4 md:px-8 mt-0 md:-mt-6 pb-12 md:pb-16 scroll-mt-24">
+        <div className="relative">
         <div className="absolute -inset-2 rounded-[32px] opacity-40 md:opacity-60 blur-2xl"
           style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.4), rgba(236,72,153,0.4), rgba(251,113,133,0.3))' }} />
 
@@ -123,20 +175,20 @@ export function GeneratePanel() {
               </div>
               <div>
                 <div style={{ fontSize: 17, fontWeight: 600 }}>Nova Studio</div>
-                <div className="text-white/50" style={{ fontSize: 12 }}>开始你的创作 · Describe anything, see it come alive</div>
+                <div className="text-white/50" style={{ fontSize: 12 }}>开始你的创作，把想法变成画面</div>
               </div>
             </div>
             <div className="flex max-w-full items-center gap-2 overflow-x-auto pb-1 md:pb-0">
               <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 shrink-0" style={{ fontSize: 11.5 }}>
                 {apiConfigured ? (
-                  <><CheckCircle2 size={12} className="text-emerald-400" /><span className="text-white/65">Live API connected</span></>
+                  <><CheckCircle2 size={12} className="text-emerald-400" /><span className="text-white/65">真实接口已连接</span></>
                 ) : (
-                  <><AlertCircle size={12} className="text-amber-300" /><span className="text-white/65">Demo mode · set OPENAI_API_KEY on server</span></>
+                  <><AlertCircle size={12} className="text-amber-300" /><span className="text-white/65">演示模式 · 请配置密钥</span></>
                 )}
               </div>
               <div className="glass rounded-full px-3 py-1.5 flex items-center gap-2 shrink-0" style={{ fontSize: 12 }}>
                 <Cpu size={12} className="text-violet-300" />
-                <span className="text-white/60">Engine</span>
+                <span className="text-white/60">引擎</span>
                 <span style={{ fontFamily: 'JetBrains Mono', color: '#f472b6' }}>GPT-image2 · v2.4</span>
                 <ChevronDown size={12} className="text-white/40" />
               </div>
@@ -153,7 +205,7 @@ export function GeneratePanel() {
                 onKeyDown={(e) => {
                   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') start();
                 }}
-                placeholder="描述你想生成的画面，例如：未来城市中的赛博朋克少女，电影级光影，高细节..."
+                placeholder="描述你想生成的画面，例如：新中式茶饮海报，宣纸纹理，淡墨山水，高级商业视觉..."
                 className="w-full bg-transparent outline-none resize-none placeholder-white/30"
                 style={{ fontSize: 15, lineHeight: 1.55, minHeight: 88 }}
               />
@@ -176,6 +228,9 @@ export function GeneratePanel() {
                   <button onClick={inspire} className="text-white/50 hover:text-white/90 transition rounded-lg px-2.5 py-1.5 hover:bg-white/5 flex items-center gap-1.5" style={{ fontSize: 12 }}>
                     <Shuffle size={13} /> 灵感
                   </button>
+                  <button onClick={randomizePrompt} className="text-white/50 hover:text-white/90 transition rounded-lg px-2.5 py-1.5 hover:bg-white/5 flex items-center gap-1.5" style={{ fontSize: 12 }}>
+                    <Wand2 size={13} /> 随机提示词
+                  </button>
                   <span className="text-white/30" style={{ fontSize: 11 }}>{prompt.length} / 1500</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/40" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }}>
@@ -189,7 +244,7 @@ export function GeneratePanel() {
             <div>
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>图片比例</span>
-                <span className="text-white/35" style={{ fontSize: 11 }}>Aspect ratio</span>
+                <span className="text-white/35" style={{ fontSize: 11 }}>画面比例</span>
               </div>
               <div className="grid grid-cols-5 gap-1.5 md:gap-2">
                 {ratios.map((r) => (
@@ -211,7 +266,7 @@ export function GeneratePanel() {
             <div>
               <div className="flex items-center justify-between mb-2.5">
                 <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>风格预设</span>
-                <span className="text-white/35" style={{ fontSize: 11 }}>Style preset</span>
+                <span className="text-white/35" style={{ fontSize: 11 }}>风格选择</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {styles.map((s) => (
@@ -234,7 +289,7 @@ export function GeneratePanel() {
           <div className="mt-5">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-white/80" style={{ fontSize: 13, fontWeight: 500 }}>基础提示词模板</span>
-              <span className="text-white/35" style={{ fontSize: 11 }}>Click to append</span>
+              <span className="text-white/35" style={{ fontSize: 11 }}>点击添加</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {promptTemplates.map((t) => {
@@ -260,7 +315,7 @@ export function GeneratePanel() {
               style={{ fontSize: 13 }}
             >
               <span>高级参数</span>
-              <span className="text-white/35" style={{ fontSize: 11 }}>Advanced</span>
+              <span className="text-white/35" style={{ fontSize: 11 }}>参数设置</span>
               {advanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
             <AnimatePresence initial={false}>
@@ -273,20 +328,16 @@ export function GeneratePanel() {
                   className="overflow-hidden"
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-4">
-                    <ParamCard label="图片数量" sub="Batch" value={batch}>
-                      <input type="range" min={1} max={4} value={batch} onChange={(e) => setBatch(Number(e.target.value))} className="w-full accent-pink-500" />
+                    <ParamCard label="图片数量" sub="数量" value={batch}>
+                      <input type="range" min={1} max={4} value={batch} onChange={(e) => handleBatchChange(Number(e.target.value))} className="w-full accent-pink-500" />
                     </ParamCard>
-                    <ParamCard label="清晰度" sub="Quality" value={quality}>
-                      <select value={quality} onChange={(e) => setQuality(e.target.value as ImageQuality)} className="w-full bg-transparent text-white/80 outline-none" style={{ fontSize: 11 }}>
-                        <option value="standard">Standard</option>
-                        <option value="hd">HD</option>
-                        <option value="ultra">Ultra</option>
-                      </select>
+                    <ParamCard label="清晰度" sub="质量" value={qualityLabel}>
+                      <QualitySelect value={quality} onChange={setQuality} />
                     </ParamCard>
-                    <ParamCard label="创意强度" sub="Creativity" value={creativity}>
+                    <ParamCard label="创意强度" sub="发散度" value={creativity}>
                       <input type="range" min={0} max={10} step={0.5} value={creativity} onChange={(e) => setCreativity(Number(e.target.value))} className="w-full accent-pink-500" />
                     </ParamCard>
-                    <ParamCard label="种子 Seed" sub="Seed" value={seed} mono>
+                    <ParamCard label="随机种子" sub="种子" value={seed} mono>
                       <input value={seed} onChange={(e) => setSeed(Number(e.target.value) || 1)} className="w-full bg-transparent outline-none text-white/70" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }} />
                     </ParamCard>
                   </div>
@@ -295,7 +346,7 @@ export function GeneratePanel() {
                       <Globe2 size={15} className="text-emerald-300" />
                       <div>
                         <div style={{ fontSize: 12.5 }}>公开到图库</div>
-                        <div className="text-white/40" style={{ fontSize: 10.5 }}>Publish to public gallery</div>
+                        <div className="text-white/40" style={{ fontSize: 10.5 }}>生成后展示在公共图库</div>
                       </div>
                     </div>
                     <button
@@ -318,11 +369,11 @@ export function GeneratePanel() {
               style={{ fontSize: 15, fontWeight: 600 }}
             >
               <Sparkles size={17} />
-              {generating ? 'GPT-image2 is creating...' : 'Generate Image · 立即生成'}
+              {generating ? 'GPT-image2 正在生成...' : '立即生成图片'}
               {!generating && <Send size={15} />}
             </button>
             <button className="glass rounded-2xl px-5 py-4 hover:bg-white/8 transition flex items-center justify-center gap-2" style={{ fontSize: 13 }}>
-              <Eye size={14} /> Preview
+              <Eye size={14} /> 预览
             </button>
           </div>
 
@@ -345,10 +396,10 @@ export function GeneratePanel() {
                     <div className="flex items-center gap-2">
                       <span className={`w-2 h-2 rounded-full ${generating ? 'bg-pink-400 animate-pulse' : 'bg-emerald-400'}`} />
                       <span style={{ fontSize: 13, fontWeight: 500 }}>
-                        {generating ? 'GPT-image2 is creating...' : `Generated ${results.length} images`}
+                        {generating ? 'GPT-image2 正在生成...' : `已生成 ${results.length} 张图片`}
                       </span>
                       <span className="text-white/40" style={{ fontSize: 11 }}>
-                        {generating ? '正在生成 · est. 4.2s' : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? 'Demo' : 'Live'}`}
+                        {generating ? '正在生成 · 预计 4.2 秒' : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? '演示' : '真实'}`}
                       </span>
                     </div>
                     {generating && (
@@ -364,15 +415,34 @@ export function GeneratePanel() {
                     {Array.from({ length: previewSlots }).map((_, i) => {
                       const r = results[i];
                       return (
-                        <div key={i} className="aspect-square rounded-xl overflow-hidden relative bg-white/5 group">
+                        <div
+                          key={i}
+                          role={r ? 'button' : undefined}
+                          tabIndex={r ? 0 : undefined}
+                          aria-label={r ? '查看图片详情' : undefined}
+                          onClick={() => r && setActiveResult(toDetailItem(r))}
+                          onKeyDown={(event) => {
+                            if (!r) return;
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              setActiveResult(toDetailItem(r));
+                            }
+                          }}
+                          className={`aspect-square rounded-xl overflow-hidden relative bg-white/5 group ${r ? 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300/70' : ''}`}
+                        >
                           {r ? (
                             <>
                               <img src={r.url} className="w-full h-full object-cover" />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition pointer-events-none">
+                                <span className="glass-strong rounded-xl px-3 py-2 flex items-center gap-1.5" style={{ fontSize: 12 }}>
+                                  <Eye size={13} /> 查看详情
+                                </span>
+                              </div>
                               <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between opacity-0 group-hover:opacity-100 transition">
-                                <button onClick={() => imageAction(r.id, 'like')} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Like"><Heart size={10} className="text-pink-400" /></button>
-                                <button onClick={() => { imageAction(r.id, 'copy'); navigator.clipboard?.writeText(r.prompt); }} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Copy prompt"><Copy size={10} /></button>
-                                <a href={imageDownloadUrl(r.id)} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="Download"><Download size={10} /></a>
+                                <button onClick={(e) => { e.stopPropagation(); imageAction(r.id, 'like'); }} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="点赞"><Heart size={10} className="text-pink-400" /></button>
+                                <button onClick={(e) => { e.stopPropagation(); imageAction(r.id, 'copy'); navigator.clipboard?.writeText(r.prompt); }} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="复制提示词"><Copy size={10} /></button>
+                                <a href={imageDownloadUrl(r.id)} onClick={(e) => e.stopPropagation()} className="glass rounded-md px-1.5 py-1" style={{ fontSize: 10 }} title="下载"><Download size={10} /></a>
                               </div>
                             </>
                           ) : (
@@ -389,9 +459,91 @@ export function GeneratePanel() {
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <ImageDetailDrawer
+        item={activeResult}
+        onClose={() => setActiveResult(null)}
+        onUpdate={(next) => {
+          setActiveResult((current) => (current?.id === next.id ? {
+            ...current,
+            ...next,
+            user: next.author?.user || current.user,
+            avatar: next.author?.avatar || current.avatar,
+            h: current.h,
+          } : current));
+        }}
+      />
+    </>
+  );
+}
+
+function QualitySelect({
+  value,
+  onChange,
+}: {
+  value: ImageQuality;
+  onChange: (value: ImageQuality) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = qualityOptions.find((item) => item.value === value) || qualityOptions[2];
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        onBlur={() => window.setTimeout(() => setOpen(false), 120)}
+        className="w-full rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-left text-white/80 outline-none transition hover:bg-white/8 focus:border-violet-300/60"
+        style={{ fontSize: 11 }}
+      >
+        <span className="flex items-center justify-between gap-2">
+          <span className="min-w-0">
+            <span className="block truncate font-medium text-white/85">{selected.label}</span>
+            <span className="block truncate text-white/35" style={{ fontSize: 9 }}>{selected.desc}</span>
+          </span>
+          <ChevronDown size={13} className={`shrink-0 text-white/45 transition ${open ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 overflow-hidden rounded-xl border border-white/10 bg-[#16122b]/95 p-1.5 shadow-2xl backdrop-blur-xl"
+        >
+          {qualityOptions.map((option) => {
+            const active = option.value === value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={active}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                  onChange(option.value);
+                  setOpen(false);
+                }}
+                className={`w-full rounded-lg px-2.5 py-2 text-left transition ${active ? 'chip-active text-white' : 'text-white/70 hover:bg-white/8 hover:text-white'}`}
+                style={{ fontSize: 11 }}
+              >
+                <span className="flex items-center justify-between gap-2">
+                  <span>
+                    <span className="block font-medium">{option.label}</span>
+                    <span className="block text-white/35" style={{ fontSize: 9 }}>{option.desc}</span>
+                  </span>
+                  {active ? <CheckCircle2 size={12} className="text-emerald-300" /> : null}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 

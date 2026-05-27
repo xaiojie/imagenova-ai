@@ -63,14 +63,14 @@ export function ImageDetailDrawer({
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 md:p-6">
       <button
         type="button"
-        aria-label="Close detail"
+        aria-label="关闭详情"
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
       <aside className="relative z-[80] w-full max-w-[860px] max-h-[82vh] overflow-hidden rounded-3xl border border-white/10 bg-[#0a0816]/95 shadow-2xl noise-bg">
             <div className="sticky top-0 z-10 backdrop-blur-xl bg-[#0a0816]/80 border-b border-white/5 px-5 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.15em' }}>IMAGE DETAIL</span>
+                <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.15em' }}>图片详情</span>
                 <span className="text-white/30">·</span>
                 <span className="text-white/50" style={{ fontSize: 11 }}>#{current.id.toUpperCase()}</span>
               </div>
@@ -122,7 +122,7 @@ export function ImageDetailDrawer({
                   </div>
                 </div>
                 <button className="glass rounded-xl px-3 py-1.5 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
-                  Follow · 关注
+                  关注
                 </button>
               </div>
                 </div>
@@ -131,9 +131,9 @@ export function ImageDetailDrawer({
               {/* prompt block */}
               <div className="glass rounded-2xl p-4 mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white/70" style={{ fontSize: 12, fontWeight: 500 }}>Full Prompt · 完整提示词</span>
+                  <span className="text-white/70" style={{ fontSize: 12, fontWeight: 500 }}>完整提示词</span>
                   <button onClick={() => runAction('copy').catch(() => navigator.clipboard?.writeText(current.prompt))} className="text-violet-300 flex items-center gap-1 hover:text-pink-300 transition" style={{ fontSize: 11 }}>
-                    <Copy size={11} /> Copy
+                    <Copy size={11} /> 复制
                   </button>
                 </div>
                 <p className="text-white/85" style={{ fontSize: 13, lineHeight: 1.65, fontFamily: 'JetBrains Mono' }}>
@@ -144,16 +144,16 @@ export function ImageDetailDrawer({
               {/* meta grid */}
               <div className="grid grid-cols-3 gap-2 mb-5">
                 {[
-                  { l: 'Model', v: 'GPT-image2', icon: Cpu },
-                  { l: 'Aspect', v: current.ratio, icon: Aperture },
-                  { l: 'Seed', v: String(current.seed ?? '982134'), icon: () => <span style={{ fontFamily: 'JetBrains Mono' }}>#</span> },
-                  { l: 'Quality', v: current.quality ?? 'Ultra' },
-                  { l: 'Creativity', v: String(current.creativity ?? '7.5') },
-                  { l: 'Steps', v: String(current.steps ?? '42') },
+                  { l: '模型', v: 'GPT-image2', icon: Cpu },
+                  { l: '比例', v: current.ratio, icon: Aperture },
+                  { l: '种子', v: String(current.seed ?? '982134'), icon: () => <span style={{ fontFamily: 'JetBrains Mono' }}>#</span> },
+                  { l: '清晰度', v: current.quality ?? '超清' },
+                  { l: '创意强度', v: String(current.creativity ?? '7.5') },
+                  { l: '步数', v: String(current.steps ?? '42') },
                 ].map((m: any) => (
                   <div key={m.l} className="glass rounded-xl p-3">
                     <div className="text-white/40 mb-1" style={{ fontSize: 10 }}>{m.l}</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, fontFamily: m.l === 'Seed' ? 'JetBrains Mono' : 'inherit' }}>{m.v}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, fontFamily: m.l === '种子' ? 'JetBrains Mono' : 'inherit' }}>{m.v}</div>
                   </div>
                 ))}
               </div>
@@ -165,10 +165,10 @@ export function ImageDetailDrawer({
                   className="btn-glow rounded-xl py-3 flex items-center justify-center gap-2"
                   style={{ fontSize: 13, fontWeight: 600 }}
                 >
-                  <Wand2 size={14} /> Remix · 二次创作
+                  <Wand2 size={14} /> 二次创作
                 </button>
                 <a href={imageDownloadUrl(current.id)} className="glass rounded-xl py-3 flex items-center justify-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 13 }}>
-                  <Download size={14} /> Download HD
+                  <Download size={14} /> 下载高清图
                 </a>
               </div>
               <div className="grid grid-cols-3 gap-3">
@@ -179,7 +179,7 @@ export function ImageDetailDrawer({
                   <Bookmark size={12} className={current.saved ? 'fill-violet-300 text-violet-300' : 'text-violet-300'} /> {saves}
                 </button>
                 <button onClick={() => runAction('share').catch(() => {})} className="glass rounded-xl py-2.5 flex items-center justify-center gap-1.5 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
-                  <Share2 size={12} /> Share
+                  <Share2 size={12} /> 分享
                 </button>
               </div>
                 </div>

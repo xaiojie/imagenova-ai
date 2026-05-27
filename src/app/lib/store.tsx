@@ -56,7 +56,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
   const [user, setUser] = useState<AppUser | null>(null);
   const [prompt, setPrompt] = useState(
-    '未来城市中的赛博朋克少女，霓虹反射，电影级光影，超高细节，胶片颗粒，35mm 镜头'
+    '一款透明玻璃质感的智能耳机悬浮在柔和浅灰背景中，内部结构若隐若现，摄影棚柔光，金属边缘高光，商业产品海报，画面干净高级'
   );
   const [ratio, setRatio] = useState<AspectRatio>('1:1');
   const [style, setStyle] = useState('cinematic');
@@ -66,7 +66,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     progress: 0,
     results: [],
     error: null,
-    batch: 2,
+    batch: 1,
   });
   const [pendingRemix, setPendingRemix] = useState(0);
   const generationRunningRef = useRef(false);
@@ -86,7 +86,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const startGeneration = useCallback(async (request: GenerationRequest) => {
     if (generationRunningRef.current) return;
     generationRunningRef.current = true;
-    const batch = request.n ?? 2;
+    const batch = request.n ?? 1;
     setGeneration({
       generating: true,
       progress: 0,

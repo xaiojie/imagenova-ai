@@ -28,7 +28,7 @@ export function Logo({ size = 32 }: { size?: number }) {
           ImageNova
         </span>
         <span style={{ fontFamily: 'JetBrains Mono', fontSize: 9, letterSpacing: '0.2em', color: '#a78bfa', marginTop: 2 }}>
-          AI · NOVA ENGINE
+          AI 图像引擎
         </span>
       </div>
     </div>

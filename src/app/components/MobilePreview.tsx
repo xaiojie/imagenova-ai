@@ -28,23 +28,23 @@ export function MobilePreview() {
         <div className="inline-flex items-center gap-2 mb-2">
           <span className="w-1 h-5 rounded-full bg-gradient-to-b from-sky-400 to-violet-500" />
           <span style={{ fontSize: 12, fontFamily: 'JetBrains Mono', color: '#60a5fa', letterSpacing: '0.15em' }}>
-            MOBILE · 移动端预览
+            移动端预览
           </span>
         </div>
         <h2 style={{ fontSize: 36, fontWeight: 700 }}>
-          Beautiful on <span className="text-gradient">every device</span>
+          在 <span className="text-gradient">不同设备</span> 上都好看
         </h2>
         <p className="text-white/55 mt-2" style={{ fontSize: 14 }}>响应式设计 · 390px 关键页面布局</p>
       </div>
 
       <div className="grid grid-cols-3 gap-10 justify-items-center">
         {/* Phone 1 - Home / Generate */}
-        <Phone label="01 · Generate · 创作页">
+        <Phone label="01 · 创作页">
           <div className="pt-12 px-5">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.1em' }}>NOVA</div>
-                <div style={{ fontSize: 22, fontWeight: 700, fontFamily: 'Space Grotesk' }}>Create</div>
+                <div style={{ fontSize: 22, fontWeight: 700, fontFamily: 'Space Grotesk' }}>创作</div>
               </div>
               <div className="flex gap-2">
                 <button className="w-9 h-9 rounded-xl glass flex items-center justify-center"><Bell size={14} /></button>
@@ -70,19 +70,19 @@ export function MobilePreview() {
               ))}
             </div>
             <div className="flex gap-1.5 mb-4 flex-wrap">
-              {['Cinematic', 'Anime', 'Cyber', '+5'].map((s, i) => (
+              {['电影感', '动漫', '赛博', '+5'].map((s, i) => (
                 <button key={s} className={`glass rounded-full px-2.5 py-1 ${i === 0 ? 'chip-active' : ''}`} style={{ fontSize: 10.5 }}>{s}</button>
               ))}
             </div>
 
             <button className="btn-glow w-full rounded-2xl py-3 flex items-center justify-center gap-2" style={{ fontSize: 13, fontWeight: 600 }}>
-              <Sparkles size={14} /> Generate · 生成 <Send size={12} />
+              <Sparkles size={14} /> 立即生成 <Send size={12} />
             </button>
 
             {/* progress */}
             <div className="glass rounded-xl p-3 mt-3">
               <div className="flex items-center justify-between mb-2" style={{ fontSize: 11 }}>
-                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />Creating...</span>
+                <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />生成中...</span>
                 <span style={{ fontFamily: 'JetBrains Mono', color: '#f472b6' }}>42%</span>
               </div>
               <div className="h-1 rounded-full bg-white/5 overflow-hidden">
@@ -93,14 +93,14 @@ export function MobilePreview() {
         </Phone>
 
         {/* Phone 2 - Gallery */}
-        <Phone label="02 · Gallery · 图库">
+        <Phone label="02 · 图库">
           <div className="pt-12 px-5">
             <div className="flex items-center justify-between mb-4">
-              <div style={{ fontSize: 22, fontWeight: 700, fontFamily: 'Space Grotesk' }}>Gallery</div>
+              <div style={{ fontSize: 22, fontWeight: 700, fontFamily: 'Space Grotesk' }}>图库</div>
               <button className="w-9 h-9 rounded-xl glass flex items-center justify-center"><Search size={14} /></button>
             </div>
             <div className="flex gap-1.5 mb-4 overflow-hidden">
-              {['Trending', 'Latest', 'Anime', 'Cyber', 'Realism'].map((f, i) => (
+              {['热门', '最新', '动漫', '赛博', '写实'].map((f, i) => (
                 <button key={f} className={`glass rounded-full px-3 py-1 shrink-0 ${i === 0 ? 'chip-active' : ''}`} style={{ fontSize: 11 }}>{f}</button>
               ))}
             </div>
@@ -120,11 +120,11 @@ export function MobilePreview() {
         </Phone>
 
         {/* Phone 3 - Detail */}
-        <Phone label="03 · Detail · 详情">
+        <Phone label="03 · 详情">
           <div className="pt-12 px-5">
             <div className="flex items-center justify-between mb-3">
-              <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>← BACK</div>
-              <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>SHARE</div>
+              <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>← 返回</div>
+              <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>分享</div>
             </div>
             <div className="rounded-2xl overflow-hidden mb-3 relative">
               <img src="/assets/showcase/1776699445498-ga2ry5-hgo7h0dwkaapdkk-ab96ec6c.jpg" className="w-full h-[280px] object-cover" />
@@ -139,15 +139,15 @@ export function MobilePreview() {
                 <div style={{ fontSize: 12, fontWeight: 500 }}>@mira.q</div>
                 <div className="text-white/40" style={{ fontSize: 10 }}>2026-05-13 · 14:32</div>
               </div>
-              <button className="ml-auto glass rounded-lg px-2.5 py-1" style={{ fontSize: 10.5 }}>Follow</button>
+              <button className="ml-auto glass rounded-lg px-2.5 py-1" style={{ fontSize: 10.5 }}>关注</button>
             </div>
             <div className="glass rounded-xl p-3 mb-3" style={{ fontSize: 11, lineHeight: 1.5, fontFamily: 'JetBrains Mono' }}>
-              <div className="text-white/45 mb-1.5" style={{ fontSize: 10 }}>PROMPT</div>
-              Portrait bathed in red and blue light, editorial fashion photography...
+              <div className="text-white/45 mb-1.5" style={{ fontSize: 10 }}>提示词</div>
+              红蓝光影下的人像摄影，时尚杂志质感，真实皮肤纹理...
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button className="btn-glow rounded-xl py-2.5 flex items-center justify-center gap-1.5" style={{ fontSize: 12, fontWeight: 600 }}>
-                <Wand2 size={12} /> Remix
+                <Wand2 size={12} /> 二次创作
               </button>
               <button className="glass rounded-xl py-2.5 flex items-center justify-center gap-1.5" style={{ fontSize: 12 }}>
                 <Heart size={12} className="text-pink-400" /> 5.2k

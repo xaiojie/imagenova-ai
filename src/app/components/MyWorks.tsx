@@ -20,20 +20,20 @@ const DEMO_SEEDS: GenerationResult[] = [
 ];
 
 const tabs = [
-  { id: 'all', en: 'All', cn: '全部', icon: Sparkles },
-  { id: 'public', en: 'Public', cn: '已公开', icon: Globe2 },
-  { id: 'private', en: 'Private', cn: '私密', icon: Lock },
-  { id: 'liked', en: 'Liked', cn: '收藏', icon: Heart },
+  { id: 'all', label: '全部', icon: Sparkles },
+  { id: 'public', label: '已公开', icon: Globe2 },
+  { id: 'private', label: '私密', icon: Lock },
+  { id: 'liked', label: '收藏', icon: Heart },
 ];
 
 function timeAgo(ts: number) {
   const m = Math.floor((Date.now() - ts) / 60000);
-  if (m < 1) return '刚刚 · just now';
-  if (m < 60) return `${m} min ago · ${m} 分钟前`;
+  if (m < 1) return '刚刚';
+  if (m < 60) return `${m} 分钟前`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago · ${h} 小时前`;
+  if (h < 24) return `${h} 小时前`;
   const d = Math.floor(h / 24);
-  return `${d}d ago · ${d} 天前`;
+  return `${d} 天前`;
 }
 
 function compact(value: number) {
@@ -64,10 +64,10 @@ export function MyWorksPage() {
   const items = useMemo(() => itemsFromApi.length ? itemsFromApi : works, [itemsFromApi, works]);
 
   const stats = [
-    { v: String(statsFromApi.total || items.length), l: 'Total works', cn: '总作品' },
-    { v: String(statsFromApi.live || items.filter(i => i.source === 'api').length), l: 'Live renders', cn: 'API 生成' },
-    { v: compact(statsFromApi.likes), l: 'Total likes', cn: '总点赞' },
-    { v: compact(statsFromApi.saves), l: 'Saves', cn: '收藏数' },
+    { v: String(statsFromApi.total || items.length), l: '总作品', cn: '作品' },
+    { v: String(statsFromApi.live || items.filter(i => i.source === 'api').length), l: '真实生成', cn: 'API' },
+    { v: compact(statsFromApi.likes), l: '总点赞', cn: '点赞' },
+    { v: compact(statsFromApi.saves), l: '收藏数', cn: '收藏' },
   ];
 
   return (
@@ -82,14 +82,14 @@ export function MyWorksPage() {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1 h-5 rounded-full bg-gradient-to-b from-violet-400 to-pink-400" />
               <span style={{ fontSize: 12, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.15em' }}>
-                MY WORKS · 我的作品
+                我的作品
               </span>
             </div>
             <h1 className="my-works-title" style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.05 }}>
-              Your <span className="text-gradient">creative archive</span>
+              你的 <span className="text-gradient">创作档案</span>
             </h1>
             <p className="text-white/55 mt-2 my-works-copy" style={{ fontSize: 14 }}>
-              你的所有生成 · Track, organize, and remix every image you've created with GPT-image2.
+              管理、整理并再次创作你用 GPT-image2 生成的每一张图片。
             </p>
           </div>
 
@@ -98,7 +98,7 @@ export function MyWorksPage() {
             className="btn-glow rounded-2xl px-5 py-3 flex items-center gap-2 my-works-create"
             style={{ fontSize: 14, fontWeight: 600 }}
           >
-            <Sparkles size={15} /> New Creation
+            <Sparkles size={15} /> 新建创作
           </button>
         </div>
 
@@ -129,8 +129,7 @@ export function MyWorksPage() {
                   style={{ fontSize: 12.5 }}
                 >
                   <Icon size={13} className={active ? 'text-pink-300' : 'text-white/55'} />
-                  <span>{t.en}</span>
-                  <span className="text-white/40">{t.cn}</span>
+                  <span>{t.label}</span>
                   <span className="text-white/30 ml-1" style={{ fontSize: 10.5, fontFamily: 'JetBrains Mono' }}>
                     {t.id === 'all' ? items.length : Math.floor(items.length / 2)}
                   </span>
@@ -141,10 +140,10 @@ export function MyWorksPage() {
 
           <div className="flex items-center gap-2 my-works-controls">
             <button onClick={() => setSort((s) => s === 'recent' ? 'trending' : 'recent')} className="glass rounded-xl px-3 py-2 flex items-center gap-1.5 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
-              <Clock size={12} /> Sort: Recent
+              <Clock size={12} /> 排序：最新
             </button>
             <button className="glass rounded-xl px-3 py-2 flex items-center gap-1.5 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
-              <Filter size={12} /> Filter
+              <Filter size={12} /> 筛选
             </button>
             <div className="glass rounded-xl flex items-center p-0.5">
               <button onClick={() => setLayout('masonry')} className={`w-8 h-8 rounded-lg flex items-center justify-center ${layout === 'masonry' ? 'chip-active' : ''}`}>
@@ -195,7 +194,7 @@ export function MyWorksPage() {
               className="fixed top-0 right-0 bottom-0 w-[560px] z-[70] glass-strong border-l border-white/10 overflow-y-auto noise-bg my-work-drawer">
               <div className="sticky top-0 z-10 backdrop-blur-xl bg-[#0a0816]/60 border-b border-white/5 px-6 py-4 flex items-center justify-between">
                 <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono', color: '#a78bfa', letterSpacing: '0.15em' }}>
-                  MY WORK · #{active.id}
+                  我的作品 · #{active.id}
                 </span>
                 <button onClick={() => setActive(null)} className="w-8 h-8 rounded-lg hover:bg-white/10 transition flex items-center justify-center">
                   <X size={16} />
@@ -211,16 +210,16 @@ export function MyWorksPage() {
                     </span>
                     <span className={`glass rounded-md px-2 py-1 flex items-center gap-1 ${active.source === 'api' ? '' : ''}`} style={{ fontSize: 10 }}>
                       <span className={`w-1.5 h-1.5 rounded-full ${active.source === 'api' ? 'bg-emerald-400' : 'bg-amber-300'}`} />
-                      {active.source === 'api' ? 'Live' : 'Demo'}
+                      {active.source === 'api' ? '真实生成' : '演示'}
                     </span>
                   </div>
                 </div>
 
                 <div className="glass rounded-2xl p-4 mb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-white/70" style={{ fontSize: 12, fontWeight: 500 }}>Prompt · 完整提示词</span>
+                    <span className="text-white/70" style={{ fontSize: 12, fontWeight: 500 }}>完整提示词</span>
                     <button onClick={() => { imageAction(active.id, 'copy'); navigator.clipboard?.writeText(active.prompt); }} className="text-violet-300 flex items-center gap-1 hover:text-pink-300 transition" style={{ fontSize: 11 }}>
-                    <Copy size={11} /> Copy
+                    <Copy size={11} /> 复制
                     </button>
                   </div>
                   <p className="text-white/85" style={{ fontSize: 12.5, lineHeight: 1.6, fontFamily: 'JetBrains Mono' }}>
@@ -230,12 +229,12 @@ export function MyWorksPage() {
 
                 <div className="grid grid-cols-3 gap-2 mb-5">
                   {[
-                    { l: 'Model', v: active.model },
-                    { l: 'Aspect', v: active.ratio },
-                    { l: 'Seed', v: String(active.seed), mono: true },
-                    { l: 'Quality', v: active.quality },
-                    { l: 'Style', v: active.style ?? '—' },
-                    { l: 'Created', v: timeAgo(active.createdAt).split(' · ')[0] },
+                    { l: '模型', v: active.model },
+                    { l: '比例', v: active.ratio },
+                    { l: '种子', v: String(active.seed), mono: true },
+                    { l: '清晰度', v: active.quality },
+                    { l: '风格', v: active.style ?? '—' },
+                    { l: '创建时间', v: timeAgo(active.createdAt) },
                   ].map((m) => (
                     <div key={m.l} className="glass rounded-xl p-3">
                       <div className="text-white/40 mb-1" style={{ fontSize: 10 }}>{m.l}</div>
@@ -250,11 +249,11 @@ export function MyWorksPage() {
                     className="btn-glow rounded-xl py-3 flex items-center justify-center gap-2"
                     style={{ fontSize: 13, fontWeight: 600 }}
                   >
-                    <Wand2 size={14} /> Remix · 二次创作
+                    <Wand2 size={14} /> 二次创作
                     <ArrowRight size={13} />
                   </button>
                   <a href={imageDownloadUrl(active.id)} className="glass rounded-xl py-3 flex items-center justify-center gap-2 hover:bg-white/8 transition" style={{ fontSize: 13 }}>
-                    <Download size={14} /> Download HD
+                    <Download size={14} /> 下载高清图
                   </a>
                 </div>
                 <button
@@ -267,7 +266,7 @@ export function MyWorksPage() {
                   className="w-full glass rounded-xl py-2.5 flex items-center justify-center gap-2 hover:bg-rose-500/15 transition text-rose-300"
                   style={{ fontSize: 12 }}
                 >
-                  <Trash2 size={12} /> Delete this work
+                  <Trash2 size={12} /> 删除这个作品
                 </button>
               </div>
             </motion.div>
@@ -310,7 +309,7 @@ function WorkCard({
           </span>
           <span className={`glass rounded-md px-2 py-0.5 flex items-center gap-1`} style={{ fontSize: 10 }}>
             <span className={`w-1.5 h-1.5 rounded-full ${item.source === 'api' ? 'bg-emerald-400' : 'bg-amber-300'}`} />
-            {item.source === 'api' ? 'Live' : 'Demo'}
+            {item.source === 'api' ? '真实' : '演示'}
           </span>
         </div>
         <span className="text-white/75 glass rounded-md px-2 py-0.5" style={{ fontSize: 10 }}>
@@ -324,12 +323,12 @@ function WorkCard({
           className="btn-glow rounded-xl px-3 py-2 flex items-center gap-1.5"
           style={{ fontSize: 12, fontWeight: 600 }}
         >
-          <Wand2 size={13} /> Remix
+          <Wand2 size={13} /> 二次创作
         </button>
-        <a href={imageDownloadUrl(item.id)} onClick={(e) => { e.stopPropagation(); }} className="glass-strong rounded-xl w-9 h-9 flex items-center justify-center" title="Download">
+        <a href={imageDownloadUrl(item.id)} onClick={(e) => { e.stopPropagation(); }} className="glass-strong rounded-xl w-9 h-9 flex items-center justify-center" title="下载">
           <Download size={13} />
         </a>
-        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="glass-strong rounded-xl w-9 h-9 flex items-center justify-center hover:bg-rose-500/30" title="Delete">
+        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="glass-strong rounded-xl w-9 h-9 flex items-center justify-center hover:bg-rose-500/30" title="删除">
           <Trash2 size={13} className="text-rose-300" />
         </button>
       </div>
@@ -361,12 +360,12 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
       <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ background: 'linear-gradient(135deg, #6366f1, #ec4899)' }}>
         <ImageIcon size={24} />
       </div>
-      <h3 style={{ fontSize: 22, fontWeight: 700 }}>You haven't created anything yet</h3>
+      <h3 style={{ fontSize: 22, fontWeight: 700 }}>你还没有创建作品</h3>
       <p className="text-white/55 mt-2 max-w-md" style={{ fontSize: 13 }}>
-        还没有任何作品 · Start your first generation and your works will live here forever.
+        开始第一次生成后，你的作品会自动保存在这里。
       </p>
       <button onClick={onCreate} className="btn-glow mt-6 rounded-2xl px-5 py-3 flex items-center gap-2" style={{ fontSize: 13, fontWeight: 600 }}>
-        <Sparkles size={14} /> Start creating
+        <Sparkles size={14} /> 开始创作
       </button>
     </div>
   );

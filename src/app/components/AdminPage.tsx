@@ -152,14 +152,14 @@ export function AdminPage() {
               <ServerCog size={20} />
             </div>
             <div>
-              <div className="text-base font-semibold">ImageNova Admin</div>
+              <div className="text-base font-semibold">ImageNova 管理后台</div>
               <div className="text-xs text-slate-500">轻量运维后台 · /admin</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${config?.hasApiKey ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200' : 'border-amber-300/30 bg-amber-300/10 text-amber-200'}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${config?.hasApiKey ? 'bg-emerald-300' : 'bg-amber-300'}`} />
-              {config?.hasApiKey ? 'Live API 已配置' : '未配置 Key'}
+              {config?.hasApiKey ? '真实接口已配置' : '未配置密钥'}
             </span>
             <a href="/" className="rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/8">
               返回前台
@@ -208,7 +208,7 @@ export function AdminPage() {
             </div>
 
             <div className="grid gap-4">
-              <Field label="API Base URL" hint={config?.normalizedImageApiBase ? `实际请求：${config.normalizedImageApiBase}` : undefined}>
+              <Field label="接口地址" hint={config?.normalizedImageApiBase ? `实际请求：${config.normalizedImageApiBase}` : undefined}>
                 <div className="relative">
                   <Cloud className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
                   <input
@@ -220,7 +220,7 @@ export function AdminPage() {
                 </div>
               </Field>
 
-              <Field label="API Key" hint={config?.hasApiKey ? `当前：${config.maskedApiKey}` : '留空则不修改现有 Key'}>
+              <Field label="接口密钥" hint={config?.hasApiKey ? `当前：${config.maskedApiKey}` : '留空则不修改现有密钥'}>
                 <div className="relative">
                   <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
                   <input
@@ -266,7 +266,7 @@ export function AdminPage() {
             <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
               <div className="flex items-center gap-2 text-xs text-slate-500">
                 <Lock size={14} />
-                Key 只保存在服务端 `.env`，前端不会读取完整密钥。
+                密钥只保存在服务端 `.env`，前端不会读取完整密钥。
               </div>
               <button
                 type="submit"
@@ -309,7 +309,7 @@ export function AdminPage() {
                 {(overview?.recent || []).slice(0, 4).map((item) => (
                   <div key={item.id} className="rounded-lg border border-white/8 bg-[#0c1222] p-3">
                     <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-500">
-                      <span>{item.source === 'api' ? 'Live' : 'Demo'} · {item.ratio}</span>
+                      <span>{item.source === 'api' ? '真实生成' : '演示生成'} · {item.ratio}</span>
                       <span>{timeText(item.createdAt)}</span>
                     </div>
                     <p className="line-clamp-2 text-xs leading-5 text-slate-300">{item.prompt}</p>
@@ -328,7 +328,7 @@ export function AdminPage() {
               <p className="mt-1 text-sm text-slate-500">基于 `data/db.json` 的最小用户系统，后续可平滑迁移到 MySQL 用户表。</p>
             </div>
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-500">
-              Active {overview?.activeUsers || 0} / {overview?.users || 0}
+              活跃 {overview?.activeUsers || 0} / {overview?.users || 0}
             </span>
           </div>
           {userError ? (
@@ -377,27 +377,27 @@ export function AdminPage() {
                   onChange={(event) => patchUser(item.id, { role: event.target.value as AdminUser['role'] })}
                   className="h-9 rounded-lg border border-white/10 bg-[#0c1222] px-2 text-xs outline-none"
                 >
-                  <option value="user">user</option>
-                  <option value="admin">admin</option>
+                  <option value="user">普通用户</option>
+                  <option value="admin">管理员</option>
                 </select>
                 <select
                   value={item.plan}
                   onChange={(event) => patchUser(item.id, { plan: event.target.value as AdminUser['plan'] })}
                   className="h-9 rounded-lg border border-white/10 bg-[#0c1222] px-2 text-xs outline-none"
                 >
-                  <option value="free">free</option>
-                  <option value="pro">pro</option>
+                  <option value="free">免费版</option>
+                  <option value="pro">会员版</option>
                 </select>
                 <select
                   value={item.status}
                   onChange={(event) => patchUser(item.id, { status: event.target.value as AdminUser['status'] })}
                   className="h-9 rounded-lg border border-white/10 bg-[#0c1222] px-2 text-xs outline-none"
                 >
-                  <option value="active">active</option>
-                  <option value="disabled">disabled</option>
+                  <option value="active">正常</option>
+                  <option value="disabled">禁用</option>
                 </select>
                 <div className="text-xs leading-5 text-slate-500">
-                  <div>作品 {item.stats.works} · 公开 {item.stats.publicWorks} · Live {item.stats.liveRenders}</div>
+                  <div>作品 {item.stats.works} · 公开 {item.stats.publicWorks} · 真实生成 {item.stats.liveRenders}</div>
                   <div>用量 {item.quota.usedThisMonth}/{item.quota.monthlyLimit} · 赞 {compact(item.stats.likes)}</div>
                 </div>
               </div>
@@ -412,7 +412,7 @@ export function AdminPage() {
               <h2 className="text-lg font-semibold">预留管理入口</h2>
               <p className="mt-1 text-sm text-slate-500">先占位信息架构，后续可逐步接入鉴权、数据库和任务队列。</p>
             </div>
-            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-500">Coming soon</span>
+            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-500">敬请期待</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {moduleItems.map((item) => {

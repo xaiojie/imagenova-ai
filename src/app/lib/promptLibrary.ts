@@ -15,14 +15,14 @@ export type PromptLibraryItem = {
 };
 
 export const promptCategories = [
-  { id: 'all', label: '全部', hint: 'All' },
-  { id: 'photography', label: '摄影写实', hint: 'Photo' },
-  { id: 'ui', label: 'UI / 社媒', hint: 'UI' },
-  { id: 'infographic', label: '信息图', hint: 'Infographic' },
-  { id: 'poster', label: '海报营销', hint: 'Poster' },
-  { id: 'anime', label: '动漫角色', hint: 'Anime' },
-  { id: 'game', label: '游戏娱乐', hint: 'Game' },
-  { id: 'product', label: '产品设计', hint: 'Product' },
+  { id: 'all', label: '全部', hint: '所有案例' },
+  { id: 'photography', label: '摄影写实', hint: '照片质感' },
+  { id: 'ui', label: '界面社媒', hint: '应用界面' },
+  { id: 'infographic', label: '信息图', hint: '知识视觉' },
+  { id: 'poster', label: '海报营销', hint: '商业物料' },
+  { id: 'anime', label: '动漫角色', hint: '角色插画' },
+  { id: 'game', label: '游戏娱乐', hint: '场景截图' },
+  { id: 'product', label: '产品设计', hint: '商品视觉' },
 ];
 
 export const promptLibrary: PromptLibraryItem[] = [

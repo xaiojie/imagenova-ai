@@ -4,12 +4,12 @@ import { Logo } from './Logo';
 import { NavKey, useStore, View } from '../lib/store';
 import { getMe, getModels, getNotifications, login, logout, register } from '../lib/imageApi';
 
-const navItems: { id: NavKey; en: string; cn: string }[] = [
-  { id: 'home', en: 'Generate', cn: '生成图片' },
-  { id: 'gallery', en: 'Gallery', cn: '公共图库' },
-  { id: 'prompts', en: 'Prompts', cn: '提示词广场' },
-  { id: 'works', en: 'My Works', cn: '我的作品' },
-  { id: 'pro', en: 'Pro', cn: '会员中心' },
+const navItems: { id: NavKey; label: string }[] = [
+  { id: 'home', label: '生成图片' },
+  { id: 'gallery', label: '公共图库' },
+  { id: 'prompts', label: '提示词广场' },
+  { id: 'works', label: '我的作品' },
+  { id: 'pro', label: '会员中心' },
 ];
 
 export function Navbar() {
@@ -111,13 +111,12 @@ export function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => handleClick(item.id)}
-                  className={`group relative px-3.5 py-2 rounded-xl transition-all ${active ? 'bg-white/5' : 'hover:bg-white/5'}`}
-                  style={{ fontSize: 13, fontWeight: 500 }}
+                  className={`group relative whitespace-nowrap px-4 py-2 rounded-xl transition-all ${active ? 'bg-white/5' : 'hover:bg-white/5'}`}
+                  style={{ fontSize: 13, fontWeight: 600 }}
                 >
                   <span className={active ? 'text-white' : 'text-white/70 group-hover:text-white'}>
-                    {item.en}
+                    {item.label}
                   </span>
-                  <span className="ml-1.5 text-white/30" style={{ fontSize: 11 }}>{item.cn}</span>
                   {active && (
                     <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-gradient-to-r from-violet-400 to-pink-400" />
                   )}
@@ -128,9 +127,9 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          <button className="hidden md:flex items-center gap-2 glass rounded-xl px-3 py-2 hover:bg-white/8 transition" style={{ fontSize: 12 }}>
+          <button className="hidden md:flex items-center gap-2 glass rounded-xl px-3 py-2 hover:bg-white/8 transition whitespace-nowrap" style={{ fontSize: 12 }}>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-soft" />
-            <span className="text-white/60">Model</span>
+            <span className="text-white/60">模型</span>
             <span style={{ fontFamily: 'JetBrains Mono', color: '#a78bfa' }}>{model}</span>
             <ChevronDown size={13} className="text-white/40" />
           </button>
@@ -138,7 +137,7 @@ export function Navbar() {
           <button
             onClick={toggleTheme}
             className="relative w-9 h-9 md:w-10 md:h-10 rounded-xl glass flex items-center justify-center hover:bg-white/8 transition"
-            title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}
+            title={theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'}
           >
             {theme === 'dark' ? <Sun size={16} className="text-amber-300" /> : <Moon size={16} className="text-violet-500" />}
           </button>
@@ -150,9 +149,9 @@ export function Navbar() {
 
           <div className="hidden md:block w-px h-7 bg-white/10" />
 
-          <button className="hidden md:flex btn-glow rounded-xl px-4 py-2 items-center gap-1.5" style={{ fontSize: 13, fontWeight: 600 }}>
+          <button className="hidden md:flex btn-glow rounded-xl px-4 py-2 items-center gap-1.5 whitespace-nowrap" style={{ fontSize: 13, fontWeight: 600 }}>
             <Crown size={14} />
-            <span>Upgrade</span>
+            <span>升级会员</span>
           </button>
 
           {user ? (
@@ -179,12 +178,12 @@ export function Navbar() {
                 </div>
                 <div className="mb-3 grid grid-cols-2 gap-2 text-center">
                   <div className="rounded-xl bg-white/5 p-2">
-                    <div style={{ fontSize: 13, fontWeight: 600 }}>{user.plan}</div>
-                    <div className="text-white/35" style={{ fontSize: 10 }}>Plan</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{user.plan === 'pro' ? '会员' : '免费'}</div>
+                    <div className="text-white/35" style={{ fontSize: 10 }}>套餐</div>
                   </div>
                   <div className="rounded-xl bg-white/5 p-2">
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{user.quota.usedThisMonth}/{user.quota.monthlyLimit}</div>
-                    <div className="text-white/35" style={{ fontSize: 10 }}>Usage</div>
+                    <div className="text-white/35" style={{ fontSize: 10 }}>用量</div>
                   </div>
                 </div>
                 <button
@@ -200,7 +199,7 @@ export function Navbar() {
           ) : (
             <button
               onClick={() => { setAuthMode('login'); setAuthOpen(true); }}
-              className="glass rounded-xl px-3 md:px-4 py-2 flex items-center gap-2 hover:bg-white/8"
+              className="glass rounded-xl px-3 md:px-4 py-2 flex items-center gap-2 hover:bg-white/8 whitespace-nowrap"
               style={{ fontSize: 13, fontWeight: 600 }}
             >
               <UserRound size={14} /> 登录
