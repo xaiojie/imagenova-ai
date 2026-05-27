@@ -23,8 +23,9 @@ loadEnv(envPath);
 const PORT = Number(process.env.PORT || 8787);
 const SESSION_COOKIE = 'imagenova_session';
 const SESSION_TTL = 1000 * 60 * 60 * 24 * 7;
-const IMAGE_PROVIDER_TIMEOUT_MS = Number(process.env.IMAGE_PROVIDER_TIMEOUT_MS || 110000);
+const IMAGE_PROVIDER_TIMEOUT_MS = Number(process.env.IMAGE_PROVIDER_TIMEOUT_MS || 300000);
 const DATA_DRIVER = process.env.DATA_DRIVER === 'mysql' ? 'mysql' : 'json';
+const generationJobs = new Map();
 let dbWriteQueue = Promise.resolve();
 let mysqlPool;
 let dataReady = false;
@@ -969,6 +970,92 @@ function createImageRecord(base, url, source, index, referenceImage, user) {
   };
 }
 
+function serializeGenerationJob(job) {
+  return {
+    id: job.id,
+    status: job.status,
+    progress: job.progress,
+    items: job.records || [],
+    error: job.error || null,
+    detail: job.detail || null,
+    createdAt: job.createdAt,
+    updatedAt: job.updatedAt,
+  };
+}
+
+function scheduleGenerationJobCleanup(jobId) {
+  setTimeout(() => generationJobs.delete(jobId), 1000 * 60 * 30).unref?.();
+}
+
+function assertGenerationJobAccess(job, user) {
+  return job && (job.ownerId === user.id || user.role === 'admin');
+}
+
+async function createGenerationRecords(body, referenceFile, referenceImage, user) {
+  const { apiKey } = getRuntimeConfig();
+  let records = [];
+  let liveGenerationError = null;
+
+  if (apiKey) {
+    try {
+      const apiItems = await callOpenAiImages(body, referenceFile);
+      for (let i = 0; i < apiItems.length; i += 1) {
+        const imageId = id('img');
+        const url = await persistApiImage(apiItems[i], imageId, i);
+        records.push({ ...createImageRecord(body, url, 'api', i, referenceImage, user), id: imageId });
+      }
+    } catch (error) {
+      liveGenerationError = error;
+      console.error('[image-provider] live generation failed:', error);
+      await updateDb((db) => {
+        db.notifications.unshift({ id: id('n'), type: 'warning', title: '真实图片生成失败', body: error.message, read: false, createdAt: now() });
+      });
+    }
+  }
+
+  if (records.length === 0) {
+    if (apiKey && liveGenerationError) {
+      const error = new Error('图片生成接口调用失败，未使用演示图片替代。请检查接口地址、密钥或模型配置。');
+      error.detail = liveGenerationError.message;
+      throw error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    records = Array.from({ length: body.n }).map((_, i) => createImageRecord(body, mockPool[(now() + i) % mockPool.length], 'mock', i, referenceImage, user));
+  }
+
+  await updateDb((db) => {
+    const freshUser = db.users.find((item) => item.id === user.id);
+    db.images.unshift(...records);
+    if (freshUser) {
+      freshUser.quota ||= defaultQuota(freshUser.plan);
+      freshUser.quota.usedThisMonth = (freshUser.quota.usedThisMonth || 0) + records.length;
+    }
+  });
+
+  return records;
+}
+
+async function runGenerationJob(job) {
+  job.status = 'running';
+  job.progress = 10;
+  job.updatedAt = now();
+  try {
+    const records = await createGenerationRecords(job.body, job.referenceFile, job.referenceImage, job.user);
+    job.records = records;
+    job.status = 'succeeded';
+    job.progress = 100;
+    job.updatedAt = now();
+  } catch (error) {
+    job.status = 'failed';
+    job.progress = 100;
+    job.error = error.message || '生成失败。';
+    job.detail = error.detail || null;
+    job.updatedAt = now();
+  } finally {
+    scheduleGenerationJobCleanup(job.id);
+  }
+}
+
 function sortImages(items, sort = 'recent') {
   const list = [...items];
   if (sort === 'trending') return list.sort((a, b) => ((b.likes * 2) + b.saves + b.shares) - ((a.likes * 2) + a.saves + a.shares));
@@ -1311,7 +1398,6 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     const auth = await requireUser(req, res);
     if (!auth) return;
     const { user } = auth;
-    const { apiKey } = getRuntimeConfig();
     const body = normalizeGenerationBody(req.body);
     if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
     if (body.prompt.length > 1500) return res.status(400).json({ error: '提示词不能超过 1500 个字符。' });
@@ -1321,49 +1407,57 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     if (remaining <= 0) return res.status(402).json({ error: '本月生成额度已用完。' });
     body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
     const referenceImage = await saveReference(req.file);
-
-    let records = [];
-    let liveGenerationError = null;
-    if (apiKey) {
-      try {
-        const apiItems = await callOpenAiImages(body, req.file);
-        for (let i = 0; i < apiItems.length; i += 1) {
-          const imageId = id('img');
-          const url = await persistApiImage(apiItems[i], imageId, i);
-          records.push({ ...createImageRecord(body, url, 'api', i, referenceImage, user), id: imageId });
-        }
-      } catch (error) {
-        liveGenerationError = error;
-        console.error('[image-provider] live generation failed:', error);
-        await updateDb((db) => {
-          db.notifications.unshift({ id: id('n'), type: 'warning', title: '真实图片生成失败', body: error.message, read: false, createdAt: now() });
-        });
-      }
-    }
-
-    if (records.length === 0) {
-      if (apiKey && liveGenerationError) {
-        return res.status(502).json({
-          error: '图片生成接口调用失败，未使用演示图片替代。请检查接口地址、密钥或模型配置。',
-          detail: liveGenerationError.message,
-        });
-      }
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      records = Array.from({ length: body.n }).map((_, i) => createImageRecord(body, mockPool[(now() + i) % mockPool.length], 'mock', i, referenceImage, user));
-    }
-
-    await updateDb((db) => {
-      const freshUser = db.users.find((item) => item.id === user.id);
-      db.images.unshift(...records);
-      if (freshUser) {
-        freshUser.quota ||= defaultQuota(freshUser.plan);
-        freshUser.quota.usedThisMonth = (freshUser.quota.usedThisMonth || 0) + records.length;
-      }
-    });
+    const records = await createGenerationRecords(body, req.file, referenceImage, user);
     res.json({ items: records, source: records[0]?.source || 'mock' });
   } catch (error) {
-    res.status(500).json({ error: error.message || '生成失败。' });
+    res.status(error.detail ? 502 : 500).json({ error: error.message || '生成失败。', detail: error.detail });
   }
+});
+
+app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
+  try {
+    const auth = await requireUser(req, res);
+    if (!auth) return;
+    const { user } = auth;
+    const body = normalizeGenerationBody(req.body);
+    if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
+    if (body.prompt.length > 1500) return res.status(400).json({ error: '提示词不能超过 1500 个字符。' });
+
+    const membership = membershipForUser(user);
+    const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
+    if (remaining <= 0) return res.status(402).json({ error: '本月生成额度已用完。' });
+    body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
+
+    const referenceImage = await saveReference(req.file);
+    const job = {
+      id: id('job'),
+      ownerId: user.id,
+      user,
+      body,
+      referenceFile: req.file || null,
+      referenceImage,
+      records: [],
+      status: 'queued',
+      progress: 1,
+      error: null,
+      detail: null,
+      createdAt: now(),
+      updatedAt: now(),
+    };
+    generationJobs.set(job.id, job);
+    setImmediate(() => runGenerationJob(job));
+    res.status(202).json({ job: serializeGenerationJob(job) });
+  } catch (error) {
+    res.status(500).json({ error: error.message || '创建生成任务失败。' });
+  }
+});
+
+app.get('/api/generate/jobs/:id', async (req, res) => {
+  const auth = await requireUser(req, res);
+  if (!auth) return;
+  const job = generationJobs.get(req.params.id);
+  if (!assertGenerationJobAccess(job, auth.user)) return res.status(404).json({ error: '生成任务不存在或已过期。' });
+  res.json({ job: serializeGenerationJob(job) });
 });
 
 app.get('/api/works', async (req, res) => {

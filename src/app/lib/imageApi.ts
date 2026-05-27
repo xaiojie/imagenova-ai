@@ -48,6 +48,17 @@ export interface GenerationResult {
   referenceImage?: string | null;
 }
 
+export interface GenerationJobStatus {
+  id: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  progress: number;
+  items: GenerationResult[];
+  error: string | null;
+  detail?: string | null;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface PagedResult<T> {
   items: T[];
   page: number;
@@ -253,11 +264,35 @@ export async function generateImages(req: GenerationRequest): Promise<Generation
   form.append('tags', (req.tags ?? []).join(','));
   if (req.reference) form.append('reference', req.reference);
 
-  const data = await api<{ items: GenerationResult[] }>('/api/generate', {
+  const data = await api<{ job: GenerationJobStatus }>('/api/generate/jobs', {
     method: 'POST',
     body: form,
   });
-  return data.items;
+  return pollGenerationJob(data.job.id);
+}
+
+async function pollGenerationJob(jobId: string): Promise<GenerationResult[]> {
+  const startedAt = Date.now();
+  let transientFailures = 0;
+
+  while (Date.now() - startedAt < 1000 * 60 * 20) {
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    try {
+      const data = await api<{ job: GenerationJobStatus }>(`/api/generate/jobs/${jobId}`);
+      transientFailures = 0;
+      if (data.job.status === 'succeeded') return data.job.items;
+      if (data.job.status === 'failed') {
+        throw new Error(data.job.error || data.job.detail || '生成失败。');
+      }
+    } catch (error: any) {
+      const networkError = error?.name === 'TypeError' || /failed to fetch|load failed/i.test(error?.message || '');
+      if (!networkError) throw error;
+      transientFailures += 1;
+      if (transientFailures >= 5) throw error;
+    }
+  }
+
+  throw new Error('生成任务等待超时，请稍后到「我的作品」查看结果。');
 }
 
 export async function getWorks(params: Record<string, string | number | undefined> = {}) {
