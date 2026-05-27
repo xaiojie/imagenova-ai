@@ -58,6 +58,14 @@ const randomPrompts = [
   '大型游戏场景概念图，古代遗迹被巨树根系缠绕，中央有发光石门，探险者举着火把站在入口前，体积光、尘埃粒子、史诗氛围',
 ];
 
+function formatElapsed(ms: number) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  if (minutes <= 0) return `${seconds} 秒`;
+  return `${minutes} 分 ${String(seconds).padStart(2, '0')} 秒`;
+}
+
 export function GeneratePanel() {
   const {
     prompt, setPrompt, ratio, setRatio, style, setStyle,
@@ -73,6 +81,7 @@ export function GeneratePanel() {
   const [publish, setPublish] = useState(true);
   const [reference, setReference] = useState<File | null>(null);
   const [activeResult, setActiveResult] = useState<GalleryItem | null>(null);
+  const [elapsedNow, setElapsedNow] = useState(Date.now());
   const panelRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -93,6 +102,13 @@ export function GeneratePanel() {
     panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(() => taRef.current?.focus(), 600);
   }, [pendingRemix]);
+
+  useEffect(() => {
+    if (!generation.generating) return;
+    setElapsedNow(Date.now());
+    const timer = window.setInterval(() => setElapsedNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [generation.generating, generation.startedAt]);
 
   const toggleTag = (t: string) => {
     setTags((cur) => cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t]);
@@ -151,6 +167,7 @@ export function GeneratePanel() {
   const error = generation.error;
   const previewSlots = generating ? generation.batch : Math.max(batch, results.length);
   const qualityLabel = qualityOptions.find((item) => item.value === quality)?.label || '超清';
+  const elapsedText = formatElapsed(elapsedNow - (generation.startedAt || elapsedNow));
   const toDetailItem = (item: GenerationResult): GalleryItem => ({
     ...item,
     user: item.author?.user || user?.name || '我的作品',
@@ -399,7 +416,7 @@ export function GeneratePanel() {
                         {generating ? 'GPT-image2 正在生成...' : `已生成 ${results.length} 张图片`}
                       </span>
                       <span className="text-white/40" style={{ fontSize: 11 }}>
-                        {generating ? '正在生成 · 预计 4.2 秒' : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? '演示' : '真实'}`}
+                        {generating ? `正在生成 · 已用时 ${elapsedText}` : `保存到「我的作品」 · ${results[0]?.source === 'mock' ? '演示' : '真实'}`}
                       </span>
                     </div>
                     {generating && (

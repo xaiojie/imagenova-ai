@@ -18,6 +18,7 @@ type GenerationJob = {
   results: GenerationResult[];
   error: string | null;
   batch: number;
+  startedAt: number | null;
 };
 
 interface Store {
@@ -67,6 +68,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     results: [],
     error: null,
     batch: 1,
+    startedAt: null,
   });
   const [pendingRemix, setPendingRemix] = useState(0);
   const generationRunningRef = useRef(false);
@@ -87,12 +89,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (generationRunningRef.current) return;
     generationRunningRef.current = true;
     const batch = request.n ?? 1;
+    const startedAt = Date.now();
     setGeneration({
       generating: true,
       progress: 0,
       results: [],
       error: null,
       batch,
+      startedAt,
     });
 
     const ticker = window.setInterval(() => {
@@ -112,6 +116,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         results: items,
         error: null,
         batch,
+        startedAt,
       }));
     } catch (error: any) {
       setGeneration((cur) => ({
@@ -120,6 +125,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         progress: 0,
         error: error?.message ?? 'Generation failed',
         batch,
+        startedAt,
       }));
     } finally {
       window.clearInterval(ticker);
