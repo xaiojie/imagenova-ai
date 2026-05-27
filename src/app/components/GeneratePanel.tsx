@@ -217,8 +217,7 @@ export function GeneratePanel() {
               <textarea
                 ref={taRef}
                 value={prompt}
-                maxLength={1500}
-                onChange={(e) => setPrompt(e.target.value.slice(0, 1500))}
+                onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={(e) => {
                   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') start();
                 }}
@@ -248,7 +247,7 @@ export function GeneratePanel() {
                   <button onClick={randomizePrompt} className="text-white/50 hover:text-white/90 transition rounded-lg px-2.5 py-1.5 hover:bg-white/5 flex items-center gap-1.5" style={{ fontSize: 12 }}>
                     <Wand2 size={13} /> 随机提示词
                   </button>
-                  <span className="text-white/30" style={{ fontSize: 11 }}>{prompt.length} / 1500</span>
+                  <span className="text-white/30" style={{ fontSize: 11 }}>{prompt.length} 字</span>
                 </div>
                 <div className="flex items-center gap-2 text-white/40" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }}>
                   ⌘ + ↵

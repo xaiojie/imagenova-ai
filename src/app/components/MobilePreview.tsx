@@ -60,7 +60,7 @@ export function MobilePreview() {
             <div className="rounded-2xl p-[1.5px] bg-gradient-to-r from-violet-500/40 to-pink-500/40 mb-3">
               <div className="rounded-2xl bg-[#0c0a1f]/90 p-3.5" style={{ fontSize: 12, lineHeight: 1.5 }}>
                 <div className="text-white/85">未来城市中的赛博朋克少女，电影级光影...</div>
-                <div className="text-white/30 mt-2" style={{ fontSize: 10 }}>23 / 1500</div>
+                <div className="text-white/30 mt-2" style={{ fontSize: 10 }}>23 字</div>
               </div>
             </div>
 

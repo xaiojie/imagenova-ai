@@ -1485,7 +1485,6 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     const { user } = auth;
     const body = normalizeGenerationBody(req.body);
     if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
-    if (body.prompt.length > 1500) return res.status(400).json({ error: '提示词不能超过 1500 个字符。' });
 
     const membership = membershipForUser(user);
     const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
@@ -1506,7 +1505,6 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
     const { user } = auth;
     const body = normalizeGenerationBody(req.body);
     if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
-    if (body.prompt.length > 1500) return res.status(400).json({ error: '提示词不能超过 1500 个字符。' });
 
     const membership = membershipForUser(user);
     const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
