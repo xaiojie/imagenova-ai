@@ -4,6 +4,7 @@ import {
   Sparkles, Send, ChevronDown, ChevronUp, Cpu, Image as ImageIcon,
   Shuffle, Eye, Globe2, Wand2,
   AlertCircle, CheckCircle2, Heart, Download, Copy,
+  X,
 } from 'lucide-react';
 import { useStore } from '../lib/store';
 import {
@@ -80,6 +81,7 @@ export function GeneratePanel() {
   const [seed, setSeed] = useState(982134);
   const [publish, setPublish] = useState(true);
   const [reference, setReference] = useState<File | null>(null);
+  const [referenceImageError, setReferenceImageError] = useState(false);
   const [activeResult, setActiveResult] = useState<GalleryItem | null>(null);
   const [elapsedNow, setElapsedNow] = useState(Date.now());
   const panelRef = useRef<HTMLDivElement>(null);
@@ -109,6 +111,10 @@ export function GeneratePanel() {
     const timer = window.setInterval(() => setElapsedNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, [generation.generating, generation.startedAt]);
+
+  useEffect(() => {
+    setReferenceImageError(false);
+  }, [referenceUrl]);
 
   const toggleTag = (t: string) => {
     setTags((cur) => cur.includes(t) ? cur.filter(x => x !== t) : [...cur, t]);
@@ -256,19 +262,55 @@ export function GeneratePanel() {
                     ⌘ + ↵
                   </div>
                 </div>
-                <div className="flex flex-col gap-1.5 md:flex-row md:items-center">
-                  <div className="flex items-center gap-1.5 text-white/45 shrink-0" style={{ fontSize: 12 }}>
-                    <ImageIcon size={13} />
-                    编辑参考图 URL
+                {referenceUrl ? (
+                  <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-2.5">
+                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-white/5">
+                      {referenceImageError ? (
+                        <div className="flex h-full w-full items-center justify-center text-white/35">
+                          <ImageIcon size={18} />
+                        </div>
+                      ) : (
+                        <img
+                          src={referenceUrl}
+                          alt="编辑参考图"
+                          className="h-full w-full object-cover"
+                          onError={() => setReferenceImageError(true)}
+                        />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 text-white/80" style={{ fontSize: 12, fontWeight: 600 }}>
+                        <ImageIcon size={13} className="text-pink-300" />
+                        当前图片将作为编辑参考图
+                      </div>
+                      <div className="mt-1 truncate text-white/35" style={{ fontSize: 11 }}>
+                        点击生成后会调用图片编辑接口
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setReferenceUrl('')}
+                      className="h-8 w-8 shrink-0 rounded-lg text-white/45 transition hover:bg-white/10 hover:text-white"
+                      title="移除参考图"
+                    >
+                      <X size={14} className="mx-auto" />
+                    </button>
                   </div>
-                  <input
-                    value={referenceUrl}
-                    onChange={(e) => setReferenceUrl(e.target.value)}
-                    placeholder="粘贴公网图片地址后，将调用图片编辑接口"
-                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white/80 outline-none placeholder-white/25 focus:border-pink-400/50"
-                    style={{ fontSize: 12 }}
-                  />
-                </div>
+                ) : (
+                  <div className="flex flex-col gap-1.5 md:flex-row md:items-center">
+                    <div className="flex items-center gap-1.5 text-white/45 shrink-0" style={{ fontSize: 12 }}>
+                      <ImageIcon size={13} />
+                      编辑参考图
+                    </div>
+                    <input
+                      value={referenceUrl}
+                      onChange={(e) => setReferenceUrl(e.target.value)}
+                      placeholder="粘贴公网图片地址后，将调用图片编辑接口"
+                      className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white/80 outline-none placeholder-white/25 focus:border-pink-400/50"
+                      style={{ fontSize: 12 }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
