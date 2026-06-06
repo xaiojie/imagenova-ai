@@ -68,8 +68,8 @@ function formatElapsed(ms: number) {
 
 export function GeneratePanel() {
   const {
-    prompt, setPrompt, ratio, setRatio, style, setStyle,
-    pendingRemix, user, setUser, generation, startGeneration, setGenerationError,
+    prompt, setPrompt, ratio, setRatio, style, setStyle, referenceUrl, setReferenceUrl,
+    pendingRemix, user, setUser, openAuth, generation, startGeneration, setGenerationError,
   } = useStore();
   const [tags, setTags] = useState<string[]>(['电影级光影', '超高细节']);
   const [advanced, setAdvanced] = useState(true);
@@ -134,7 +134,8 @@ export function GeneratePanel() {
   const start = async () => {
     if (generation.generating || !prompt.trim()) return;
     if (!user) {
-      setGenerationError('请先登录后再生成图片。');
+      setGenerationError('请先登录，登录后会继续保留当前提示词和参数。');
+      openAuth('login');
       return;
     }
     await startGeneration({
@@ -148,6 +149,7 @@ export function GeneratePanel() {
       publish,
       tags,
       reference,
+      referenceUrl,
     });
   };
 
@@ -225,8 +227,9 @@ export function GeneratePanel() {
                 className="w-full bg-transparent outline-none resize-none placeholder-white/30"
                 style={{ fontSize: 15, lineHeight: 1.55, minHeight: 88 }}
               />
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-                <div className="flex items-center gap-2">
+              <div className="mt-3 pt-3 border-t border-white/5 space-y-3">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                  <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <input
                     ref={fileRef}
                     type="file"
@@ -248,9 +251,23 @@ export function GeneratePanel() {
                     <Wand2 size={13} /> 随机提示词
                   </button>
                   <span className="text-white/30" style={{ fontSize: 11 }}>{prompt.length} 字</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white/40" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }}>
+                    ⌘ + ↵
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-white/40" style={{ fontSize: 11, fontFamily: 'JetBrains Mono' }}>
-                  ⌘ + ↵
+                <div className="flex flex-col gap-1.5 md:flex-row md:items-center">
+                  <div className="flex items-center gap-1.5 text-white/45 shrink-0" style={{ fontSize: 12 }}>
+                    <ImageIcon size={13} />
+                    编辑参考图 URL
+                  </div>
+                  <input
+                    value={referenceUrl}
+                    onChange={(e) => setReferenceUrl(e.target.value)}
+                    placeholder="粘贴公网图片地址后，将调用图片编辑接口"
+                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white/80 outline-none placeholder-white/25 focus:border-pink-400/50"
+                    style={{ fontSize: 12 }}
+                  />
                 </div>
               </div>
             </div>

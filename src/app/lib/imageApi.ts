@@ -13,6 +13,7 @@ export interface GenerationRequest {
   publish?: boolean;
   tags?: string[];
   reference?: File | null;
+  referenceUrl?: string;
 }
 
 export interface Author {
@@ -98,8 +99,9 @@ export interface AppConfig {
     hdDownload: boolean;
     privateGallery: boolean;
     concurrentJobs: number;
-    monthlyLimit: number;
+    monthlyLimit: number | null;
     usedThisMonth: number;
+    unlimited?: boolean;
   };
 }
 
@@ -112,7 +114,7 @@ export interface AppUser {
   plan: 'free' | 'pro';
   status: 'active' | 'disabled';
   quota: {
-    monthlyLimit: number;
+    monthlyLimit: number | null;
     usedThisMonth: number;
     maxBatch: number;
     hdDownload: boolean;
@@ -263,6 +265,7 @@ export async function generateImages(req: GenerationRequest): Promise<Generation
   form.append('publish', String(req.publish ?? true));
   form.append('tags', (req.tags ?? []).join(','));
   if (req.reference) form.append('reference', req.reference);
+  if (req.referenceUrl?.trim()) form.append('referenceUrl', req.referenceUrl.trim());
 
   const data = await api<{ job: GenerationJobStatus }>('/api/generate/jobs', {
     method: 'POST',

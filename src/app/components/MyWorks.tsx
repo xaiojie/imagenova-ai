@@ -170,7 +170,7 @@ export function MyWorksPage() {
                 index={i}
                 layout={layout}
                 onOpen={() => setActive(w)}
-                onRemix={() => remix({ prompt: w.prompt, ratio: w.ratio as AspectRatio, style: w.style })}
+                onRemix={() => remix({ prompt: w.prompt, ratio: w.ratio as AspectRatio, style: w.style, referenceUrl: w.url })}
                 onDelete={async () => {
                   await deleteWork(w.id);
                   removeWork(w.id);
@@ -245,7 +245,7 @@ export function MyWorksPage() {
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <button
-                    onClick={() => { remix({ prompt: active.prompt, ratio: active.ratio as AspectRatio, style: active.style }); setActive(null); }}
+                    onClick={() => { remix({ prompt: active.prompt, ratio: active.ratio as AspectRatio, style: active.style, referenceUrl: active.url }); setActive(null); }}
                     className="btn-glow rounded-xl py-3 flex items-center justify-center gap-2"
                     style={{ fontSize: 13, fontWeight: 600 }}
                   >

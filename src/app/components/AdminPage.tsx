@@ -398,7 +398,7 @@ export function AdminPage() {
                 </select>
                 <div className="text-xs leading-5 text-slate-500">
                   <div>作品 {item.stats.works} · 公开 {item.stats.publicWorks} · 真实生成 {item.stats.liveRenders}</div>
-                  <div>用量 {item.quota.usedThisMonth}/{item.quota.monthlyLimit} · 赞 {compact(item.stats.likes)}</div>
+                  <div>已生成 {compact(item.quota.usedThisMonth)} · 不限量 · 赞 {compact(item.stats.likes)}</div>
                 </div>
               </div>
             ))}

@@ -161,7 +161,7 @@ export function ImageDetailDrawer({
               {/* actions */}
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <button
-                  onClick={() => { remix({ prompt: current.prompt, ratio: current.ratio as AspectRatio }); onClose(); }}
+                  onClick={() => { remix({ prompt: current.prompt, ratio: current.ratio as AspectRatio, style: current.style, referenceUrl: current.url }); onClose(); }}
                   className="btn-glow rounded-xl py-3 flex items-center justify-center gap-2"
                   style={{ fontSize: 13, fontWeight: 600 }}
                 >

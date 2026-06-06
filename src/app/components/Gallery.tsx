@@ -169,7 +169,7 @@ export function Gallery({ onOpen }: { onOpen: (item: GalleryItem) => void }) {
                   </span>
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); remix({ prompt: item.prompt, ratio: item.ratio as AspectRatio }); }}
+                    onClick={(e) => { e.stopPropagation(); remix({ prompt: item.prompt, ratio: item.ratio as AspectRatio, style: item.style, referenceUrl: item.url }); }}
                     className="rounded-xl px-3 py-2 flex items-center gap-1.5 btn-glow"
                     style={{ fontSize: 12 }}
                   >

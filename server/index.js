@@ -214,7 +214,7 @@ function clearSessionCookie(res) {
 
 function defaultQuota(plan = 'free') {
   return {
-    monthlyLimit: plan === 'pro' ? 1000 : 80,
+    monthlyLimit: null,
     usedThisMonth: 0,
     maxBatch: plan === 'pro' ? 8 : 4,
     hdDownload: plan === 'pro',
@@ -348,7 +348,7 @@ function defaultDb() {
         hdDownload: false,
         privateGallery: false,
         concurrentJobs: 1,
-        monthlyLimit: 80,
+        monthlyLimit: null,
         usedThisMonth: 0,
       },
       selectedModel: uiModelName,
@@ -857,7 +857,13 @@ function normalizeGenerationBody(body) {
   const publish = body.publish === true || body.publish === 'true';
   const n = clampInt(body.n, 1, 8, 4);
   const tags = Array.isArray(body.tags) ? body.tags : String(body.tags || '').split(',').map((t) => t.trim()).filter(Boolean);
-  return { prompt, ratio, style, quality, creativity, seed, publish, n, tags };
+  const referenceUrl = String(body.referenceUrl || '').trim();
+  if (referenceUrl && !/^https?:\/\/\S+$/i.test(referenceUrl)) {
+    const error = new Error('参考图 URL 必须是 http 或 https 公网图片地址。');
+    error.status = 400;
+    throw error;
+  }
+  return { prompt, ratio, style, quality, creativity, seed, publish, n, tags, referenceUrl };
 }
 
 function buildFinalPrompt(req) {
@@ -885,7 +891,9 @@ function compactProviderError(status, text) {
 
 async function callOpenAiImage(req, referenceFile) {
   const { apiKey, imageApiBase, imageModel } = getRuntimeConfig();
-  const endpoint = referenceFile ? `${imageApiBase}/images/edits` : `${imageApiBase}/images/generations`;
+  const referenceImages = req.referenceUrl ? [req.referenceUrl] : [];
+  const isEdit = referenceImages.length > 0 || referenceFile;
+  const endpoint = isEdit ? `${imageApiBase}/images/edits` : `${imageApiBase}/images/generations`;
   const finalPrompt = buildFinalPrompt(req);
 
   const fetchImage = async () => {
@@ -895,7 +903,7 @@ async function callOpenAiImage(req, referenceFile) {
       method: 'POST',
       signal: controller.signal,
     };
-    if (!referenceFile) {
+    if (!isEdit || referenceImages.length > 0) {
       try {
         return await fetch(endpoint, {
           ...options,
@@ -911,6 +919,8 @@ async function callOpenAiImage(req, referenceFile) {
             quality: toOpenAiQuality(req.quality),
             background: 'auto',
             output_format: 'png',
+            response_format: 'b64_json',
+            ...(referenceImages.length > 0 ? { reference_images: referenceImages } : {}),
           }),
         });
       } finally {
@@ -1227,6 +1237,7 @@ function membershipForUser(user) {
     concurrentJobs: quota.concurrentJobs,
     monthlyLimit: quota.monthlyLimit,
     usedThisMonth: quota.usedThisMonth || 0,
+    unlimited: quota.monthlyLimit == null,
   };
 }
 
@@ -1487,14 +1498,12 @@ app.post('/api/generate', upload.single('reference'), async (req, res) => {
     if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
 
     const membership = membershipForUser(user);
-    const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
-    if (remaining <= 0) return res.status(402).json({ error: '本月生成额度已用完。' });
-    body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
-    const referenceImage = await saveReference(req.file);
+    body.n = Math.min(body.n, membership.maxBatch || 4);
+    const referenceImage = await saveReference(req.file) || body.referenceUrl || null;
     const records = await createGenerationRecords(body, req.file, referenceImage, user);
     res.json({ items: records, source: records[0]?.source || 'mock' });
   } catch (error) {
-    res.status(error.detail ? 502 : 500).json({ error: error.message || '生成失败。', detail: error.detail });
+    res.status(error.status || (error.detail ? 502 : 500)).json({ error: error.message || '生成失败。', detail: error.detail });
   }
 });
 
@@ -1507,11 +1516,9 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
     if (!body.prompt) return res.status(400).json({ error: '请输入提示词。' });
 
     const membership = membershipForUser(user);
-    const remaining = Math.max(0, membership.monthlyLimit - membership.usedThisMonth);
-    if (remaining <= 0) return res.status(402).json({ error: '本月生成额度已用完。' });
-    body.n = Math.min(body.n, membership.maxBatch || 4, remaining);
+    body.n = Math.min(body.n, membership.maxBatch || 4);
 
-    const referenceImage = await saveReference(req.file);
+    const referenceImage = await saveReference(req.file) || body.referenceUrl || null;
     const referenceFile = req.file && referenceImage
       ? {
           storedPath: path.join(uploadDir, path.basename(referenceImage)),
@@ -1537,7 +1544,7 @@ app.post('/api/generate/jobs', upload.single('reference'), async (req, res) => {
     await enqueueGenerationJob(job);
     res.status(202).json({ job: serializeGenerationJob(job) });
   } catch (error) {
-    res.status(500).json({ error: error.message || '创建生成任务失败。' });
+    res.status(error.status || 500).json({ error: error.message || '创建生成任务失败。' });
   }
 });
 

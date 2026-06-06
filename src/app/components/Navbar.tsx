@@ -13,11 +13,12 @@ const navItems: { id: NavKey; label: string }[] = [
 ];
 
 export function Navbar() {
-  const { view, setView, activeNav, setActiveNav, theme, toggleTheme, user, setUser } = useStore();
+  const {
+    view, setView, activeNav, setActiveNav, theme, toggleTheme,
+    user, setUser, authOpen, authMode, openAuth, closeAuth, setAuthMode,
+  } = useStore();
   const [model, setModel] = useState('GPT-image2');
   const [unread, setUnread] = useState(0);
-  const [authOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const keepAnchorActiveUntil = useRef(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -182,7 +183,7 @@ export function Navbar() {
                     <div className="text-white/35" style={{ fontSize: 10 }}>套餐</div>
                   </div>
                   <div className="rounded-xl bg-white/5 p-2">
-                    <div style={{ fontSize: 13, fontWeight: 600 }}>{user.quota.usedThisMonth}/{user.quota.monthlyLimit}</div>
+	                    <div style={{ fontSize: 13, fontWeight: 600 }}>不限量</div>
                     <div className="text-white/35" style={{ fontSize: 10 }}>用量</div>
                   </div>
                 </div>
@@ -198,7 +199,7 @@ export function Navbar() {
             </div>
           ) : (
             <button
-              onClick={() => { setAuthMode('login'); setAuthOpen(true); }}
+              onClick={() => openAuth('login')}
               className="glass rounded-xl px-3 md:px-4 py-2 flex items-center gap-2 hover:bg-white/8 whitespace-nowrap"
               style={{ fontSize: 13, fontWeight: 600 }}
             >
@@ -211,8 +212,8 @@ export function Navbar() {
         <AuthDialog
           mode={authMode}
           onMode={setAuthMode}
-          onClose={() => setAuthOpen(false)}
-          onAuthed={(nextUser) => { setUser(nextUser); setAuthOpen(false); }}
+          onClose={closeAuth}
+          onAuthed={(nextUser) => { setUser(nextUser); closeAuth(); }}
         />
       )}
       <nav className="fixed bottom-3 left-3 right-3 z-50 md:hidden glass-strong rounded-2xl px-2 py-2 flex items-center justify-around border border-white/10">
@@ -253,13 +254,21 @@ function AuthDialog({
   onAuthed: (user: any) => void;
 }) {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState(mode === 'login' ? 'demo@imagenova.local' : '');
-  const [password, setPassword] = useState(mode === 'login' ? 'demo123456' : '');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!email.trim() || !password) {
+      setError('请输入邮箱和密码。');
+      return;
+    }
+    if (mode === 'register' && !name.trim()) {
+      setError('请输入昵称。');
+      return;
+    }
     setSaving(true);
     setError('');
     try {
@@ -280,7 +289,9 @@ function AuthDialog({
         <div className="mb-5 flex items-center justify-between">
           <div>
             <div style={{ fontSize: 18, fontWeight: 700 }}>{mode === 'login' ? '登录账户' : '创建账户'}</div>
-            <div className="text-white/45 mt-1" style={{ fontSize: 12 }}>登录后作品、点赞和收藏会归属到当前用户。</div>
+            <div className="text-white/45 mt-1" style={{ fontSize: 12 }}>
+              {mode === 'login' ? '登录后继续生成，作品、点赞和收藏会归属到当前用户。' : '创建账户后会自动登录，并保存你的作品与互动记录。'}
+            </div>
           </div>
           <button type="button" onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
             <X size={16} />
@@ -302,8 +313,7 @@ function AuthDialog({
           onClick={() => {
             const next = mode === 'login' ? 'register' : 'login';
             onMode(next);
-            setEmail(next === 'login' ? 'demo@imagenova.local' : '');
-            setPassword(next === 'login' ? 'demo123456' : '');
+            setError('');
           }}
           className="mt-3 w-full text-white/50 hover:text-white"
           style={{ fontSize: 12 }}

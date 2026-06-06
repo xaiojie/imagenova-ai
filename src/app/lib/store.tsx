@@ -10,7 +10,17 @@ type RemixSeed = {
   prompt: string;
   ratio?: AspectRatio;
   style?: string;
+  referenceUrl?: string;
 };
+
+function toAbsoluteImageUrl(url?: string) {
+  if (!url) return '';
+  try {
+    return new URL(url, window.location.origin).toString();
+  } catch {
+    return url;
+  }
+}
 
 type GenerationJob = {
   generating: boolean;
@@ -30,6 +40,11 @@ interface Store {
   toggleTheme: () => void;
   user: AppUser | null;
   setUser: (user: AppUser | null) => void;
+  authOpen: boolean;
+  authMode: 'login' | 'register';
+  openAuth: (mode?: 'login' | 'register') => void;
+  closeAuth: () => void;
+  setAuthMode: (mode: 'login' | 'register') => void;
 
   prompt: string;
   setPrompt: (p: string) => void;
@@ -37,6 +52,8 @@ interface Store {
   setRatio: (r: AspectRatio) => void;
   style: string;
   setStyle: (s: string) => void;
+  referenceUrl: string;
+  setReferenceUrl: (url: string) => void;
 
   works: GenerationResult[];
   addWorks: (items: GenerationResult[]) => void;
@@ -56,11 +73,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [activeNav, setActiveNav] = useState<NavKey>('home');
   const [theme, setTheme] = useState<Theme>('dark');
   const [user, setUser] = useState<AppUser | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [prompt, setPrompt] = useState(
     '一款透明玻璃质感的智能耳机悬浮在柔和浅灰背景中，内部结构若隐若现，摄影棚柔光，金属边缘高光，商业产品海报，画面干净高级'
   );
   const [ratio, setRatio] = useState<AspectRatio>('1:1');
   const [style, setStyle] = useState('cinematic');
+  const [referenceUrl, setReferenceUrl] = useState('');
   const [works, setWorks] = useState<GenerationResult[]>([]);
   const [generation, setGeneration] = useState<GenerationJob>({
     generating: false,
@@ -83,6 +103,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const setGenerationError = useCallback((message: string | null) => {
     setGeneration((cur) => ({ ...cur, error: message }));
+  }, []);
+
+  const openAuth = useCallback((mode: 'login' | 'register' = 'login') => {
+    setAuthMode(mode);
+    setAuthOpen(true);
+  }, []);
+
+  const closeAuth = useCallback(() => {
+    setAuthOpen(false);
   }, []);
 
   const startGeneration = useCallback(async (request: GenerationRequest) => {
@@ -148,6 +177,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setPrompt(seed.prompt);
     if (seed.ratio) setRatio(seed.ratio);
     if (seed.style) setStyle(seed.style);
+    setReferenceUrl(toAbsoluteImageUrl(seed.referenceUrl));
     setView('home');
     setActiveNav('home');
     setPendingRemix((n) => n + 1);
@@ -157,7 +187,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     <StoreCtx.Provider
       value={{
         view, setView, activeNav, setActiveNav, theme, toggleTheme, user, setUser,
-        prompt, setPrompt, ratio, setRatio, style, setStyle,
+        authOpen, authMode, openAuth, closeAuth, setAuthMode,
+        prompt, setPrompt, ratio, setRatio, style, setStyle, referenceUrl, setReferenceUrl,
         works, addWorks, removeWork, generation, startGeneration, setGenerationError,
         remix, pendingRemix,
       }}
