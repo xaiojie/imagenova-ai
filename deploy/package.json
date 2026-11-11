@@ -1,0 +1,19 @@
+{
+  "name": "imagenova-runtime",
+  "private": true,
+  "type": "module",
+  "description": "ImageNova AI backend runtime dependencies",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.3",
+    "redis": "^5.12.1"
+  }
+}

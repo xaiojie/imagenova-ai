@@ -22,6 +22,7 @@ const envPath = path.join(rootDir, '.env');
 loadEnv(envPath);
 
 const PORT = Number(process.env.PORT || 8787);
+const HOST = String(process.env.HOST || '127.0.0.1');
 const SESSION_COOKIE = 'imagenova_session';
 const SESSION_TTL = 1000 * 60 * 60 * 24 * 7;
 const IMAGE_PROVIDER_TIMEOUT_MS = Number(process.env.IMAGE_PROVIDER_TIMEOUT_MS || 300000);
@@ -1697,8 +1698,8 @@ app.use((err, _req, res, _next) => {
 await ensureData();
 await initRedis();
 await startRedisGenerationWorker();
-app.listen(PORT, '127.0.0.1', () => {
+app.listen(PORT, HOST, () => {
   const { apiKey, imageModel } = getRuntimeConfig();
-  console.log(`ImageNova API listening on http://127.0.0.1:${PORT}`);
+  console.log(`ImageNova API listening on http://${HOST}:${PORT}`);
   console.log(apiKey ? `Live image provider enabled: ${imageModel}` : 'No OPENAI_API_KEY set; using persistent mock generation.');
 });

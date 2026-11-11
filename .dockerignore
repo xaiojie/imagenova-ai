@@ -1,0 +1,6 @@
+node_modules
+.git
+data
+logs
+.env
+*.tar.gz
